@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>DEIDEI 画面遷移図（キャプチャ）</title>
+  <style>
+    :root {
+      --bg: #f0f0f0;
+      --card: #fff;
+      --line: #222;
+      --muted: #666;
+      --arrow: #444;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Hiragino Sans", "Noto Sans JP", sans-serif;
+      background: var(--bg);
+      color: #111;
+      line-height: 1.45;
+    }
+    header {
+      padding: 20px 24px 8px;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+    header h1 { font-size: 20px; margin: 0 0 8px; }
+    header p { margin: 4px 0; font-size: 13px; color: var(--muted); }
+    header a { color: #06c; }
+    section.board {
+      max-width: 1400px;
+      margin: 0 auto 32px;
+      padding: 0 16px 24px;
+    }
+    section.board h2 {
+      font-size: 16px;
+      margin: 24px 0 12px;
+      padding-bottom: 6px;
+      border-bottom: 2px solid var(--line);
+    }
+    .row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: flex-start;
+      gap: 4px 0;
+      margin-bottom: 8px;
+    }
+    .node {
+      width: 120px;
+      text-align: center;
+      text-decoration: none;
+      color: inherit;
+      background: var(--card);
+      border: 1px solid var(--line);
+      padding: 6px;
+      margin: 4px;
+    }
+    .node img {
+      display: block;
+      width: 100%;
+      height: auto;
+      border: 1px solid #ccc;
+      background: #eee;
+    }
+    .node .id {
+      font-size: 11px;
+      font-weight: 800;
+      margin-top: 4px;
+    }
+    .node .name {
+      font-size: 10px;
+      color: var(--muted);
+      line-height: 1.25;
+    }
+    .arrow {
+      align-self: center;
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--arrow);
+      padding: 0 2px;
+      user-select: none;
+    }
+    .arrow.down {
+      width: 100%;
+      text-align: left;
+      padding-left: 56px;
+      margin: 2px 0;
+    }
+    .branch {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: flex-start;
+      margin-left: 24px;
+      padding-left: 12px;
+      border-left: 2px dashed #999;
+    }
+    .label {
+      font-size: 11px;
+      color: var(--muted);
+      align-self: center;
+      padding: 0 6px;
+      max-width: 72px;
+    }
+    .note {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 8px;
+    }
+    .gallery {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+      gap: 10px;
+    }
+    .gallery .node { width: auto; margin: 0; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>DEIDEI-CardGame 画面遷移図（キャプチャ）</h1>
+    <p>
+      <a href="./index.html">ワイヤーフレーム index.html</a> ·
+      <a href="./screen-design.md">画面設計</a>
+    </p>
+    <p>フォン枠キャプチャ 34枚。矢印は主要フロー。枝は最小。</p>
+  </header>
+
+  <section class="board">
+    <h2>1. 参加者メインフロー</h2>
+
+    <div class="row">
+      <a class="node" href="./index.html#s-home"><img src="./captures/wf-01-top.png" alt="WF-01" /><div class="id">WF-01</div><div class="name">TOP</div></a>
+      <span class="arrow">→</span>
+      <a class="node" href="./index.html#s-join"><img src="./captures/wf-02-join.png" alt="WF-02" /><div class="id">WF-02</div><div class="name">参加</div></a>
+      <span class="arrow">→</span>
+      <a class="node" href="./index.html#s-join-wait"><img src="./captures/wf-04-waiting.png" alt="WF-04" /><div class="id">WF-04</div><div class="name">待機</div></a>
+      <span class="arrow">→</span>
+      <a class="node" href="./index.html#s-ready"><img src="./captures/wf-05-ready.png" alt="WF-05" /><div class="id">WF-05</div><div class="name">準備</div></a>
+    </div>
+    <div class="branch">
+      <span class="label">エラー時</span>
+      <a class="node" href="./index.html#s-join-error"><img src="./captures/wf-03-join-error.png" alt="WF-03" /><div class="id">WF-03</div><div class="name">参加エラー →02へ</div></a>
+    </div>
+
+    <div class="arrow down">↓ 給与フェーズ（一斉）</div>
+    <div class="row">
+      <a class="node" href="./index.html#s-turn-salary"><img src="./captures/wf-06-salary.png" alt="WF-06" /><div class="id">WF-06</div><div class="name">給与</div></a>
+      <span class="arrow">→</span>
+      <a class="node" href="./index.html#s-turn-salary-wait"><img src="./captures/wf-07-salary-wait.png" alt="WF-07" /><div class="id">WF-07</div><div class="name">確認待ち</div></a>
+    </div>
+
+    <div class="arrow down">↓ 退職</div>
+    <div class="row">
+      <a class="node" href="./index.html#s-retire-dice"><img src="./captures/wf-08-retire-dice.png" alt="WF-08" /><div class="id">WF-08</div><div class="name">出目入力</div></a>
+      <span class="arrow">→</span>
+      <a class="node" href="./index.html#s-retire-result"><img src="./captures/wf-09-retire-result.png" alt="WF-09" /><div class="id">WF-09</div><div class="name">退職</div></a>
+      <span class="label">または</span>
+      <a class="node" href="./index.html#s-retire-prevented"><img src="./captures/wf-10-retire-stayed.png" alt="WF-10" /><div class="id">WF-10</div><div class="name">残留</div></a>
+    </div>
+
+    <div class="arrow down">↓ 施策</div>
+    <div class="row">
+      <a class="node" href="./index.html#s-solution-draw"><img src="./captures/wf-11-solution-draw.png" alt="WF-11" /><div class="id">WF-11</div><div class="name">施策読取</div></a>
+      <span class="arrow">→</span>
+      <a class="node" href="./index.html#s-solution-result"><img src="./captures/wf-12-solution-result.png" alt="WF-12" /><div class="id">WF-12</div><div class="name">効果</div></a>
+      <span class="arrow">→</span>
+      <a class="node" href="./index.html#s-solution-extra"><img src="./captures/wf-13-solution-extra.png" alt="WF-13" /><div class="id">WF-13</div><div class="name">追加？</div></a>
+    </div>
+    <p class="note">WF-11/12 の skip、WF-13「引かない」→ 採用へ。追加で引く → WF-11 に戻る。</p>
+
+    <div class="arrow down">↓ 採用</div>
+    <div class="row">
+      <a class="node" href="./index.html#s-hire-select"><img src="./captures/wf-14-hire-select.png" alt="WF-14" /><div class="id">WF-14</div><div class="name">採用読取</div></a>
+      <span class="arrow">→</span>
+      <a class="node" href="./index.html#s-hire-compete"><img src="./captures/wf-15-hire-compete.png" alt="WF-15" /><div class="id">WF-15</div><div class="name">バッティング</div></a>
+      <span class="arrow">→</span>
+      <a class="node" href="./index.html#s-hire-result-ok"><img src="./captures/wf-16-hire-ok.png" alt="WF-16" /><div class="id">WF-16</div><div class="name">成功</div></a>
+      <span class="label">失敗例</span>
+      <a class="node" href="./index.html#s-hire-result-ng"><img src="./captures/wf-17-hire-ng.png" alt="WF-17" /><div class="id">WF-17</div><div class="name">失敗</div></a>
+    </div>
+    <div class="branch">
+      <span class="label">任意</span>
+      <a class="node" href="./index.html#s-promote"><img src="./captures/wf-18-promote.png" alt="WF-18" /><div class="id">WF-18</div><div class="name">昇進</div></a>
+    </div>
+
+    <div class="arrow down">↓ 手番完了 → 終了</div>
+    <div class="row">
+      <a class="node" href="./index.html#s-done-skip"><img src="./captures/wf-19-turn-done.png" alt="WF-19" /><div class="id">WF-19</div><div class="name">手番完了／他者待ち</div></a>
+      <span class="arrow">→</span>
+      <a class="node" href="./index.html#s-end"><img src="./captures/wf-22-end.png" alt="WF-22" /><div class="id">WF-22</div><div class="name">終了</div></a>
+      <span class="label">再接続</span>
+      <a class="node" href="./index.html#s-reconnect"><img src="./captures/wf-23-reconnect.png" alt="WF-23" /><div class="id">WF-23</div><div class="name">再接続</div></a>
+    </div>
+    <p class="note">WF-19 は次手番・次ターンで給与（WF-06）へ戻る想定。一覧参照:</p>
+    <div class="row">
+      <a class="node" href="./index.html#s-list-solutions"><img src="./captures/wf-20-list-solutions.png" alt="WF-20" /><div class="id">WF-20</div><div class="name">施策一覧</div></a>
+      <a class="node" href="./index.html#s-list-employees"><img src="./captures/wf-21-list-employees.png" alt="WF-21" /><div class="id">WF-21</div><div class="name">従業員一覧</div></a>
+    </div>
+  </section>
+
+  <section class="board">
+    <h2>2. Admin フロー</h2>
+    <div class="row">
+      <a class="node" href="./index.html#s-admin-login"><img src="./captures/wf-24-admin-login.png" alt="WF-24" /><div class="id">WF-24</div><div class="name">ログイン</div></a>
+      <span class="arrow">→</span>
+      <a class="node" href="./index.html#s-admin"><img src="./captures/wf-25-admin-menu.png" alt="WF-25" /><div class="id">WF-25</div><div class="name">メニュー</div></a>
+      <span class="arrow">→</span>
+      <a class="node" href="./index.html#s-admin-sessions"><img src="./captures/wf-26-admin-sessions.png" alt="WF-26" /><div class="id">WF-26</div><div class="name">セッション一覧</div></a>
+    </div>
+    <div class="arrow down">↓ セッション</div>
+    <div class="row">
+      <a class="node" href="./index.html#s-facil-create"><img src="./captures/wf-30-admin-create.png" alt="WF-30" /><div class="id">WF-30</div><div class="name">作成</div></a>
+      <span class="arrow">→</span>
+      <a class="node" href="./index.html#s-facil-code"><img src="./captures/wf-31-admin-code.png" alt="WF-31" /><div class="id">WF-31</div><div class="name">参加コード</div></a>
+      <span class="arrow">→</span>
+      <a class="node" href="./index.html#s-admin-session-detail"><img src="./captures/wf-27-admin-detail-wait.png" alt="WF-27" /><div class="id">WF-27</div><div class="name">詳細・待機</div></a>
+      <span class="arrow">→</span>
+      <a class="node" href="./index.html#s-order"><img src="./captures/wf-32-admin-order.png" alt="WF-32" /><div class="id">WF-32</div><div class="name">手番順</div></a>
+      <span class="arrow">→</span>
+      <a class="node" href="./index.html#s-admin-session-detail-play"><img src="./captures/wf-28-admin-detail-play.png" alt="WF-28" /><div class="id">WF-28</div><div class="name">詳細・進行</div></a>
+      <a class="node" href="./index.html#s-admin-session-detail-end"><img src="./captures/wf-29-admin-detail-end.png" alt="WF-29" /><div class="id">WF-29</div><div class="name">詳細・終了</div></a>
+    </div>
+    <div class="arrow down">↓ カード</div>
+    <div class="row">
+      <a class="node" href="./index.html#s-admin-cards"><img src="./captures/wf-33-admin-cards.png" alt="WF-33" /><div class="id">WF-33</div><div class="name">カード一覧</div></a>
+      <span class="arrow">→</span>
+      <a class="node" href="./index.html#s-admin-card-edit"><img src="./captures/wf-34-admin-card-edit.png" alt="WF-34" /><div class="id">WF-34</div><div class="name">登録・更新</div></a>
+    </div>
+  </section>
+
+  <section class="board">
+    <h2>3. 全キャプチャ一覧</h2>
+    <div class="gallery" id="gallery"></div>
+  </section>
+
+  <script>
+    const all = [
+      ["wf-01-top", "WF-01 TOP", "s-home"],
+      ["wf-02-join", "WF-02 参加", "s-join"],
+      ["wf-03-join-error", "WF-03 エラー", "s-join-error"],
+      ["wf-04-waiting", "WF-04 待機", "s-join-wait"],
+      ["wf-05-ready", "WF-05 準備", "s-ready"],
+      ["wf-06-salary", "WF-06 給与", "s-turn-salary"],
+      ["wf-07-salary-wait", "WF-07 給与待ち", "s-turn-salary-wait"],
+      ["wf-08-retire-dice", "WF-08 出目", "s-retire-dice"],
+      ["wf-09-retire-result", "WF-09 退職", "s-retire-result"],
+      ["wf-10-retire-stayed", "WF-10 残留", "s-retire-prevented"],
+      ["wf-11-solution-draw", "WF-11 施策読取", "s-solution-draw"],
+      ["wf-12-solution-result", "WF-12 施策結果", "s-solution-result"],
+      ["wf-13-solution-extra", "WF-13 追加", "s-solution-extra"],
+      ["wf-14-hire-select", "WF-14 採用読取", "s-hire-select"],
+      ["wf-15-hire-compete", "WF-15 競合", "s-hire-compete"],
+      ["wf-16-hire-ok", "WF-16 成功", "s-hire-result-ok"],
+      ["wf-17-hire-ng", "WF-17 失敗", "s-hire-result-ng"],
+      ["wf-18-promote", "WF-18 昇進", "s-promote"],
+      ["wf-19-turn-done", "WF-19 手番完了", "s-done-skip"],
+      ["wf-20-list-solutions", "WF-20 施策一覧", "s-list-solutions"],
+      ["wf-21-list-employees", "WF-21 従業員", "s-list-employees"],
+      ["wf-22-end", "WF-22 終了", "s-end"],
+      ["wf-23-reconnect", "WF-23 再接続", "s-reconnect"],
+      ["wf-24-admin-login", "WF-24 ログイン", "s-admin-login"],
+      ["wf-25-admin-menu", "WF-25 メニュー", "s-admin"],
+      ["wf-26-admin-sessions", "WF-26 一覧", "s-admin-sessions"],
+      ["wf-27-admin-detail-wait", "WF-27 詳細待機", "s-admin-session-detail"],
+      ["wf-28-admin-detail-play", "WF-28 詳細進行", "s-admin-session-detail-play"],
+      ["wf-29-admin-detail-end", "WF-29 詳細終了", "s-admin-session-detail-end"],
+      ["wf-30-admin-create", "WF-30 作成", "s-facil-create"],
+      ["wf-31-admin-code", "WF-31 コード", "s-facil-code"],
+      ["wf-32-admin-order", "WF-32 手番順", "s-order"],
+      ["wf-33-admin-cards", "WF-33 カード", "s-admin-cards"],
+      ["wf-34-admin-card-edit", "WF-34 編集", "s-admin-card-edit"],
+    ];
+    const g = document.getElementById("gallery");
+    all.forEach(([file, label, hash]) => {
+      const a = document.createElement("a");
+      a.className = "node";
+      a.href = "./index.html#" + hash;
+      a.innerHTML = `<img src="./captures/${file}.png" alt="${label}" /><div class="id">${label.split(" ")[0]}</div><div class="name">${label.slice(6)}</div>`;
+      g.appendChild(a);
+    });
+  </script>
+</body>
+</html>

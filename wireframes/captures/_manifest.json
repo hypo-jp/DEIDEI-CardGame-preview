@@ -1,0 +1,172 @@
+[
+  {
+    "id": "s-home",
+    "file": "wf-01-top",
+    "bytes": 50618
+  },
+  {
+    "id": "s-join",
+    "file": "wf-02-join",
+    "bytes": 50435
+  },
+  {
+    "id": "s-join-error",
+    "file": "wf-03-join-error",
+    "bytes": 44993
+  },
+  {
+    "id": "s-join-wait",
+    "file": "wf-04-waiting",
+    "bytes": 35867
+  },
+  {
+    "id": "s-ready",
+    "file": "wf-05-ready",
+    "bytes": 56407
+  },
+  {
+    "id": "s-turn-salary",
+    "file": "wf-06-salary",
+    "bytes": 77099
+  },
+  {
+    "id": "s-turn-salary-wait",
+    "file": "wf-07-salary-wait",
+    "bytes": 52639
+  },
+  {
+    "id": "s-retire-dice",
+    "file": "wf-08-retire-dice",
+    "bytes": 92938
+  },
+  {
+    "id": "s-retire-result",
+    "file": "wf-09-retire-result",
+    "bytes": 91077
+  },
+  {
+    "id": "s-retire-prevented",
+    "file": "wf-10-retire-stayed",
+    "bytes": 92884
+  },
+  {
+    "id": "s-solution-draw",
+    "file": "wf-11-solution-draw",
+    "bytes": 76203
+  },
+  {
+    "id": "s-solution-result",
+    "file": "wf-12-solution-result",
+    "bytes": 80158
+  },
+  {
+    "id": "s-solution-extra",
+    "file": "wf-13-solution-extra",
+    "bytes": 80122
+  },
+  {
+    "id": "s-hire-select",
+    "file": "wf-14-hire-select",
+    "bytes": 88552
+  },
+  {
+    "id": "s-hire-compete",
+    "file": "wf-15-hire-compete",
+    "bytes": 104778
+  },
+  {
+    "id": "s-hire-result-ok",
+    "file": "wf-16-hire-ok",
+    "bytes": 62847
+  },
+  {
+    "id": "s-hire-result-ng",
+    "file": "wf-17-hire-ng",
+    "bytes": 62886
+  },
+  {
+    "id": "s-promote",
+    "file": "wf-18-promote",
+    "bytes": 79748
+  },
+  {
+    "id": "s-done-skip",
+    "file": "wf-19-turn-done",
+    "bytes": 65121
+  },
+  {
+    "id": "s-list-solutions",
+    "file": "wf-20-list-solutions",
+    "bytes": 112361
+  },
+  {
+    "id": "s-list-employees",
+    "file": "wf-21-list-employees",
+    "bytes": 136501
+  },
+  {
+    "id": "s-end",
+    "file": "wf-22-end",
+    "bytes": 69218
+  },
+  {
+    "id": "s-reconnect",
+    "file": "wf-23-reconnect",
+    "bytes": 55095
+  },
+  {
+    "id": "s-admin-login",
+    "file": "wf-24-admin-login",
+    "bytes": 36039
+  },
+  {
+    "id": "s-admin",
+    "file": "wf-25-admin-menu",
+    "bytes": 37112
+  },
+  {
+    "id": "s-admin-sessions",
+    "file": "wf-26-admin-sessions",
+    "bytes": 54925
+  },
+  {
+    "id": "s-admin-session-detail",
+    "file": "wf-27-admin-detail-wait",
+    "bytes": 88132
+  },
+  {
+    "id": "s-admin-session-detail-play",
+    "file": "wf-28-admin-detail-play",
+    "bytes": 66730
+  },
+  {
+    "id": "s-admin-session-detail-end",
+    "file": "wf-29-admin-detail-end",
+    "bytes": 42303
+  },
+  {
+    "id": "s-facil-create",
+    "file": "wf-30-admin-create",
+    "bytes": 61634
+  },
+  {
+    "id": "s-facil-code",
+    "file": "wf-31-admin-code",
+    "bytes": 73565
+  },
+  {
+    "id": "s-order",
+    "file": "wf-32-admin-order",
+    "bytes": 59068
+  },
+  {
+    "id": "s-admin-cards",
+    "file": "wf-33-admin-cards",
+    "bytes": 34805
+  },
+  {
+    "id": "s-admin-card-edit",
+    "file": "wf-34-admin-card-edit",
+    "bytes": 82495
+  }
+]
