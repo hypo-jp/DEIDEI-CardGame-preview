@@ -1,0 +1,1608 @@
+<!DOCTYPE html>
+<html lang="ja" data-theme="deidei">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>DEIDEI プロトタイプ UIモック</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;800&family=Zen+Maru+Gothic:wght@500;700;900&display=swap" rel="stylesheet" />
+  <link id="daisyCdn" href="https://cdn.jsdelivr.net/npm/daisyui@4.12.14/dist/full.min.css" rel="stylesheet" type="text/css" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    // CDN offline / blocked: keep layout readable without Tailwind/daisyUI
+    (function () {
+      function injectFallback() {
+        if (document.getElementById("cdn-fallback-css")) return;
+        document.documentElement.setAttribute("data-cdn-fallback", "1");
+        var s = document.createElement("style");
+        s.id = "cdn-fallback-css";
+        s.textContent = [
+          "body{font-family:sans-serif}",
+          ".btn,.btn-primary,.btn-outline,.btn-ghost,.btn-neutral,.btn-sm,.btn-lg,.btn-xs{display:inline-flex;align-items:center;justify-content:center;padding:10px 14px;border:1px solid #14212B;background:#0F4C5C;color:#fff;text-decoration:none;border-radius:10px;font:inherit;cursor:pointer}",
+          ".btn-outline{background:#fff;color:#14212B;border:1px solid #14212B}",
+          ".btn-ghost{background:transparent;color:#14212B;border:1px solid #14212B}",
+          ".btn-sm,.btn-xs{padding:6px 10px;font-size:12px}",
+          ".btn-lg{padding:14px 16px;font-size:16px;font-weight:700}",
+          ".w-full{width:100%}.flex-1{flex:1}.flex{display:flex}.flex-col{flex-direction:column}.flex-wrap{flex-wrap:wrap}.gap-1{gap:4px}.gap-2{gap:8px}.gap-3{gap:12px}.gap-4{gap:16px}",
+          ".items-center{align-items:center}.justify-between{justify-content:space-between}.justify-center{justify-content:center}.justify-start{justify-content:flex-start}",
+          ".text-center{text-align:center}.text-left{text-align:left}.text-sm{font-size:14px}.text-xs{font-size:12px}.text-lg{font-size:18px}.text-2xl{font-size:24px}.text-3xl{font-size:30px}.text-4xl{font-size:36px}.text-5xl{font-size:48px}",
+          ".font-bold{font-weight:700}.opacity-40{opacity:.4}.opacity-50{opacity:.5}.opacity-60{opacity:.6}.opacity-70{opacity:.7}",
+          ".p-3{padding:12px}.p-4{padding:16px}.p-5{padding:20px}.p-6{padding:24px}.p-8{padding:32px}.px-1{padding-left:4px;padding-right:4px}.px-2{padding-left:8px;padding-right:8px}.px-3{padding-left:12px;padding-right:12px}.px-4{padding-left:16px;padding-right:16px}.py-1{padding-top:4px;padding-bottom:4px}.py-2{padding-top:8px;padding-bottom:8px}.py-3{padding-top:12px;padding-bottom:12px}.pt-4{padding-top:16px}.pt-8{padding-top:32px}.mt-1{margin-top:4px}.mt-2{margin-top:8px}.mt-3{margin-top:12px}.ml-auto{margin-left:auto}.mx-auto{margin-left:auto;margin-right:auto}.space-y-3>*+*{margin-top:12px}.space-y-4>*+*{margin-top:16px}",
+          ".rounded-xl{border-radius:12px}.rounded-2xl{border-radius:16px}.rounded-lg{border-radius:8px}",
+          ".bg-base-100,.card,.navbar{background:#F7FAFB}.bg-base-200{background:#E8EEF0}.bg-primary,.badge-primary{background:#0F4C5C;color:#fff}.bg-sea-mist{background:#E8F2F4}.text-primary{color:#0F4C5C}.text-secondary{color:#E8A838}.text-error{color:#C45C4A}.text-success{color:#2F9B6A}",
+          ".border,.border-base-300{border:1px solid #CED8DC}.border-b{border-bottom:1px solid #CED8DC}.input,.select,.input-bordered,.select-bordered{width:100%;padding:8px 10px;border:1px solid #CED8DC;border-radius:8px;background:#fff;font:inherit}",
+          ".badge,.badge-sm,.badge-outline,.badge-ghost{display:inline-block;padding:2px 8px;border:1px solid #CED8DC;border-radius:999px;font-size:11px;background:#fff}",
+          ".alert{padding:10px 12px;border-radius:10px;background:#E8EEF0;border:1px solid #CED8DC}.alert-error{background:#f8e8e6;border-color:#C45C4A}.alert-success{background:#e6f5ee}.alert-warning{background:#fff6e6}",
+          ".navbar{display:flex;align-items:center;gap:8px;min-height:48px}.card-body{padding:12px}.card-title{font-weight:700}.link,.link-primary{color:#0F4C5C;text-decoration:underline}",
+          ".grid{display:grid}.grid-cols-3{grid-template-columns:repeat(3,1fr)}.relative{position:relative}.absolute{position:absolute}.top-2{top:8px}.right-1{right:4px}.min-w-\\[180px\\]{min-width:180px}",
+          ".table{width:100%;border-collapse:collapse}.table th,.table td{padding:8px;border-bottom:1px solid #CED8DC;text-align:left}",
+          ".cdn-banner{width:min(390px,100%);font-size:11px;padding:6px 8px;background:#fff6e6;border:1px solid #E8A838;border-radius:8px;color:#44555c}",
+        ].join("");
+        document.head.appendChild(s);
+        var banner = document.createElement("div");
+        banner.className = "cdn-banner";
+        banner.textContent = "CDN未接続のため簡易スタイルで表示しています。画面切替は動作します。";
+        var page = document.querySelector(".page");
+        if (page) page.insertBefore(banner, page.firstChild);
+      }
+      window.__deideiCdnFallback = injectFallback;
+      var link = document.getElementById("daisyCdn");
+      if (link) {
+        link.addEventListener("error", injectFallback);
+        // If stylesheet never loads (offline / blocked), fall back after a short wait
+        setTimeout(function () {
+          try {
+            var ok = false;
+            for (var i = 0; i < document.styleSheets.length; i++) {
+              var href = document.styleSheets[i].href || "";
+              if (href.indexOf("daisyui") !== -1) { ok = true; break; }
+            }
+            if (!ok) injectFallback();
+          } catch (e) { injectFallback(); }
+        }, 2500);
+      }
+    })();
+    if (typeof tailwind !== "undefined") {
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              display: ['"Zen Maru Gothic"', '"Noto Sans JP"', "sans-serif"],
+              body: ['"Noto Sans JP"', "sans-serif"],
+            },
+            colors: {
+              sea: { DEFAULT: "#0F4C5C", soft: "#1A7A8C", mist: "#E8F2F4" },
+              coin: "#E8A838",
+              ink: "#14212B",
+              paper: "#F4F7F8",
+            },
+          },
+        },
+        daisyui: {
+          themes: [
+            {
+              deidei: {
+                primary: "#0F4C5C",
+                secondary: "#E8A838",
+                accent: "#1A7A8C",
+                neutral: "#14212B",
+                "base-100": "#F7FAFB",
+                "base-200": "#E8EEF0",
+                "base-300": "#CED8DC",
+                info: "#3B82A0",
+                success: "#2F9B6A",
+                warning: "#E8A838",
+                error: "#C45C4A",
+              },
+            },
+          ],
+        },
+      };
+    } else if (typeof window.__deideiCdnFallback === "function") {
+      window.__deideiCdnFallback();
+    }
+  </script>
+  <style>
+    :root {
+      --mock-bg: #c5d0d4;
+      --phone: #14212B;
+    }
+    body {
+      margin: 0;
+      font-family: "Noto Sans JP", "Hiragino Sans", sans-serif;
+      background:
+        radial-gradient(ellipse 80% 50% at 20% 0%, rgba(26, 122, 140, 0.18), transparent 55%),
+        radial-gradient(ellipse 60% 40% at 90% 10%, rgba(232, 168, 56, 0.16), transparent 50%),
+        linear-gradient(160deg, #d7e0e3 0%, #b8c6cb 100%);
+      color: #14212B;
+      min-height: 100vh;
+    }
+    .page {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 16px 12px 48px;
+      gap: 12px;
+    }
+    .meta { width: min(390px, 100%); font-size: 12px; opacity: 0.85; }
+    .meta a { color: #0F4C5C; text-decoration: underline; }
+    .mock-tools {
+      width: min(390px, 100%);
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      border: 1px dashed #5a6b72;
+      background: rgba(255,255,255,0.55);
+      padding: 8px;
+      border-radius: 8px;
+    }
+    .mock-tools .note { font-size: 11px; color: #44555c; }
+    .phone {
+      width: min(390px, 100%);
+      min-height: 740px;
+      border: 3px solid var(--phone);
+      border-radius: 28px;
+      background: #F7FAFB;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 18px 40px rgba(20, 33, 43, 0.22);
+    }
+    .phone-status {
+      display: flex;
+      justify-content: space-between;
+      padding: 8px 16px 4px;
+      font-size: 11px;
+      font-weight: 600;
+      background: #F7FAFB;
+      color: #44555c;
+    }
+    .screen { display: none; flex: 1; flex-direction: column; min-height: 0; }
+    .screen.active { display: flex; }
+    .screen .body { flex: 1; overflow-y: auto; padding: 12px 14px; }
+    .phase-crumb { display: flex; flex-wrap: wrap; align-items: center; gap: 2px; font-size: 13px; }
+    .phase-crumb .pc { color: #9aa8ae; font-weight: 500; }
+    .phase-crumb .pc.on { color: #0F4C5C; font-weight: 800; text-decoration: underline; text-underline-offset: 3px; }
+    .phase-crumb .sep { color: #c5d0d4; margin: 0 3px; }
+    .game-bar {
+      border-top: 1px solid #CED8DC;
+      background: #fff;
+      padding: 10px 12px 12px;
+      flex-shrink: 0;
+    }
+    .brand-mark {
+      font-family: "Zen Maru Gothic", sans-serif;
+      font-weight: 900;
+      letter-spacing: 0.04em;
+    }
+    /* Keep secondary/primary chrome visible even if daisyUI CDN theme drifts */
+    .btn.btn-outline,
+    a.btn.btn-outline {
+      border-width: 1px !important;
+      border-style: solid !important;
+      border-color: #14212B !important;
+      background-color: #fff !important;
+      color: #14212B !important;
+      box-shadow: none !important;
+    }
+    .btn.btn-primary,
+    a.btn.btn-primary {
+      border-width: 1px !important;
+      border-style: solid !important;
+      border-color: #0F4C5C !important;
+    }
+    .code-cells { display: grid; grid-template-columns: repeat(6, 1fr); gap: 6px; }
+    .code-cells .cell {
+      aspect-ratio: 1;
+      display: flex; align-items: center; justify-content: center;
+      border: 2px solid #0F4C5C;
+      border-radius: 10px;
+      font-family: "Zen Maru Gothic", sans-serif;
+      font-weight: 700;
+      font-size: 18px;
+      background: #fff;
+    }
+    .dice-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+    .die-face {
+      aspect-ratio: 1;
+      border-radius: 12px;
+      border: 2px solid #CED8DC;
+      background: #fff;
+      font-family: "Zen Maru Gothic", sans-serif;
+      font-size: 22px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+    .die-face.on { border-color: #0F4C5C; background: #E8F2F4; color: #0F4C5C; }
+    .qr-stage {
+      border: 2px dashed #1A7A8C;
+      border-radius: 16px;
+      background: linear-gradient(145deg, #E8F2F4, #fff 60%);
+      min-height: 160px;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      gap: 6px;
+      color: #0F4C5C;
+      text-align: center;
+      padding: 16px;
+    }
+    .salary-state[hidden],
+    .solution-state[hidden] { display: none !important; }
+
+    /* P-11 applied — dramatic work-power feedback (replays via .sol-effect-anim) */
+    .sol-effect {
+      margin-top: 12px;
+      border-radius: 1rem;
+      padding: 1rem 1.1rem;
+      text-align: center;
+      background: rgba(15, 76, 92, 0.08);
+      border: 1px solid rgba(15, 76, 92, 0.28);
+    }
+    .sol-effect-wp {
+      font-family: "Zen Maru Gothic", sans-serif;
+      font-weight: 900;
+      font-size: 2rem;
+      color: #0F4C5C;
+      line-height: 1.1;
+    }
+    .sol-effect-delta {
+      font-family: "Zen Maru Gothic", sans-serif;
+      font-weight: 800;
+      font-size: 1.1rem;
+      color: #E8A838;
+      margin-top: 2px;
+    }
+    #s-solution-detail.sol-effect-anim .sol-effect-wp {
+      animation: hireOkPop 0.65s cubic-bezier(0.22, 1.35, 0.36, 1) both;
+    }
+    #s-solution-detail.sol-effect-anim .sol-effect-delta {
+      animation: hireFadeUp 0.4s ease-out 0.18s both;
+    }
+    #s-solution-detail.sol-effect-anim .sol-effect-coin {
+      animation: hireFadeUp 0.4s ease-out 0.32s both;
+    }
+    @media (prefers-reduced-motion: reduce) {
+      #s-solution-detail.sol-effect-anim .sol-effect-wp,
+      #s-solution-detail.sol-effect-anim .sol-effect-delta,
+      #s-solution-detail.sol-effect-anim .sol-effect-coin {
+        animation: none !important;
+        opacity: 1 !important;
+        transform: none !important;
+      }
+    }
+
+    /* P-08 / P-09 / P-15 / P-16 — dramatic result (CSS-only; replays via .result-anim) */
+    .hire-result,
+    .resign-result {
+      position: relative;
+      overflow: hidden;
+      border-radius: 1rem;
+      padding: 1.5rem 1.25rem;
+      text-align: center;
+    }
+    .hire-result--ok,
+    .resign-result--ok {
+      background: rgba(47, 155, 106, 0.12);
+      border: 1px solid rgba(47, 155, 106, 0.35);
+    }
+    .hire-result--ng,
+    .resign-result--ng {
+      background: rgba(68, 85, 92, 0.1);
+      border: 1px solid rgba(196, 92, 74, 0.35);
+      color: #3a2a28;
+    }
+    .hire-result--ng .hire-result-title,
+    .resign-result--ng .resign-result-title { color: #C45C4A; }
+    .hire-sparkles,
+    .resign-sparkles {
+      pointer-events: none;
+      position: absolute;
+      inset: 0;
+    }
+    .hire-sparkles span,
+    .resign-sparkles span {
+      position: absolute;
+      width: 7px;
+      height: 7px;
+      border-radius: 1px;
+      background: #E8A838;
+      opacity: 0;
+      left: var(--x);
+      top: var(--y);
+    }
+    .hire-sparkles span:nth-child(odd),
+    .resign-sparkles span:nth-child(odd) {
+      background: #1A7A8C;
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+    }
+    .hire-sparkles span:nth-child(1) { --x: 18%; --y: 72%; --sx: -18px; --sy: -42px; }
+    .hire-sparkles span:nth-child(2) { --x: 32%; --y: 28%; --sx: -8px; --sy: -36px; animation-delay: 0.05s; }
+    .hire-sparkles span:nth-child(3) { --x: 50%; --y: 78%; --sx: 4px; --sy: -48px; animation-delay: 0.1s; }
+    .hire-sparkles span:nth-child(4) { --x: 62%; --y: 24%; --sx: 14px; --sy: -40px; animation-delay: 0.08s; }
+    .hire-sparkles span:nth-child(5) { --x: 78%; --y: 68%; --sx: 22px; --sy: -44px; animation-delay: 0.14s; }
+    .hire-sparkles span:nth-child(6) { --x: 88%; --y: 36%; --sx: 10px; --sy: -30px; animation-delay: 0.18s; }
+    /* Soft relief particles for 残留 — fewer, teal/mist, gentle rise (not hire confetti) */
+    .resign-sparkles span {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #2F9B6A;
+    }
+    .resign-sparkles span:nth-child(odd) {
+      background: #1A7A8C;
+      width: 4px;
+      height: 4px;
+    }
+    .resign-sparkles span:nth-child(1) { --x: 22%; --y: 70%; --sx: -6px; --sy: -28px; }
+    .resign-sparkles span:nth-child(2) { --x: 42%; --y: 34%; --sx: 4px; --sy: -24px; animation-delay: 0.08s; }
+    .resign-sparkles span:nth-child(3) { --x: 58%; --y: 74%; --sx: -2px; --sy: -32px; animation-delay: 0.14s; }
+    .resign-sparkles span:nth-child(4) { --x: 78%; --y: 40%; --sx: 8px; --sy: -22px; animation-delay: 0.2s; }
+
+    #s-hire-result-ok.result-anim .hire-result-title {
+      animation: hireOkPop 0.7s cubic-bezier(0.22, 1.35, 0.36, 1) both;
+    }
+    #s-hire-result-ok.result-anim .hire-result-sub {
+      animation: hireFadeUp 0.45s ease-out 0.22s both;
+    }
+    #s-hire-result-ok.result-anim .hire-sparkles span {
+      animation: hireSparkle 1.05s ease-out both;
+    }
+    #s-hire-result-ok.result-anim .hire-stat {
+      animation: hireStatIn 0.42s ease-out both;
+    }
+    #s-hire-result-ok.result-anim .hire-stat:nth-child(1) { animation-delay: 0.32s; }
+    #s-hire-result-ok.result-anim .hire-stat:nth-child(2) { animation-delay: 0.44s; }
+    #s-hire-result-ok.result-anim .hire-stat:nth-child(3) { animation-delay: 0.56s; }
+
+    #s-hire-result-ng.result-anim .hire-result--ng {
+      animation: hireNgWash 0.7s ease-out both;
+    }
+    #s-hire-result-ng.result-anim .hire-result-title {
+      animation: hireNgShake 0.7s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+    }
+    #s-hire-result-ng.result-anim .hire-result-card {
+      animation: hireNgCard 0.55s ease-out 0.12s both;
+    }
+
+    /* P-08 退職 — farewell: dim wash, title shake+sink, illus exits */
+    #s-retire-result.result-anim .resign-result--ng {
+      animation: resignNgWash 0.85s ease-out both;
+    }
+    #s-retire-result.result-anim .resign-result-title {
+      animation: resignNgShakeSink 0.85s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+    }
+    #s-retire-result.result-anim .resign-result-sub {
+      animation: hireFadeUp 0.5s ease-out 0.28s both;
+    }
+    #s-retire-result.result-anim .resign-illus {
+      animation: resignIllusLeave 0.9s ease-in both;
+    }
+    #s-retire-result.result-anim .resign-reason {
+      animation: hireFadeUp 0.45s ease-out 0.4s both;
+    }
+
+    /* P-09 残留 — relief: soft pop, gentle sparkles, illus breathes */
+    #s-retire-prevented.result-anim .resign-result--ok {
+      animation: resignOkWash 0.7s ease-out both;
+    }
+    #s-retire-prevented.result-anim .resign-result-title {
+      animation: resignOkPop 0.75s cubic-bezier(0.22, 1.25, 0.36, 1) both;
+    }
+    #s-retire-prevented.result-anim .resign-result-sub {
+      animation: hireFadeUp 0.45s ease-out 0.24s both;
+    }
+    #s-retire-prevented.result-anim .resign-sparkles span {
+      animation: resignSoftSparkle 1.15s ease-out both;
+    }
+    #s-retire-prevented.result-anim .resign-illus {
+      animation: resignIllusRelief 0.7s cubic-bezier(0.22, 1.2, 0.36, 1) 0.1s both;
+    }
+    #s-retire-prevented.result-anim .resign-reason {
+      animation: hireFadeUp 0.45s ease-out 0.36s both;
+    }
+
+    @keyframes hireOkPop {
+      0% { transform: scale(0.42); opacity: 0; }
+      58% { transform: scale(1.1); opacity: 1; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+    @keyframes hireFadeUp {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes hireSparkle {
+      0% { opacity: 0; transform: translate(0, 0) scale(0.2) rotate(0deg); }
+      25% { opacity: 1; }
+      100% { opacity: 0; transform: translate(var(--sx), var(--sy)) scale(1) rotate(40deg); }
+    }
+    @keyframes hireStatIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes hireNgShake {
+      0% { opacity: 0; transform: translateX(0) scale(0.96); }
+      18% { opacity: 1; }
+      32% { transform: translateX(-7px); }
+      46% { transform: translateX(6px); }
+      60% { transform: translateX(-4px); }
+      74% { transform: translateX(2px); }
+      100% { transform: translateX(0) scale(1); }
+    }
+    @keyframes hireNgWash {
+      from { filter: brightness(1.04); background: rgba(196, 92, 74, 0.06); }
+      to { filter: brightness(0.9); background: rgba(68, 85, 92, 0.14); }
+    }
+    @keyframes hireNgCard {
+      from { opacity: 0.45; transform: translateY(8px); filter: grayscale(0.45); }
+      to { opacity: 1; transform: translateY(0); filter: grayscale(0.18); }
+    }
+    @keyframes resignNgWash {
+      from { filter: brightness(1.02); background: rgba(196, 92, 74, 0.08); }
+      to { filter: brightness(0.86); background: rgba(68, 85, 92, 0.16); }
+    }
+    @keyframes resignNgShakeSink {
+      0% { opacity: 0; transform: translateX(0) translateY(-4px) scale(0.97); }
+      16% { opacity: 1; }
+      28% { transform: translateX(-6px) translateY(0); }
+      42% { transform: translateX(5px) translateY(2px); }
+      56% { transform: translateX(-3px) translateY(4px); }
+      72% { transform: translateX(2px) translateY(6px); }
+      100% { transform: translateX(0) translateY(4px) scale(1); }
+    }
+    @keyframes resignIllusLeave {
+      0% { opacity: 1; transform: translateY(0) scale(1); filter: grayscale(0); }
+      45% { opacity: 0.85; transform: translateY(6px) scale(0.96); filter: grayscale(0.35); }
+      100% { opacity: 0.55; transform: translateY(18px) scale(0.88); filter: grayscale(0.7); }
+    }
+    @keyframes resignOkWash {
+      from { filter: brightness(0.98); background: rgba(47, 155, 106, 0.06); }
+      to { filter: brightness(1.02); background: rgba(47, 155, 106, 0.14); }
+    }
+    @keyframes resignOkPop {
+      0% { transform: scale(0.55); opacity: 0; }
+      55% { transform: scale(1.06); opacity: 1; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+    @keyframes resignSoftSparkle {
+      0% { opacity: 0; transform: translate(0, 0) scale(0.3); }
+      30% { opacity: 0.85; }
+      100% { opacity: 0; transform: translate(var(--sx), var(--sy)) scale(1); }
+    }
+    @keyframes resignIllusRelief {
+      0% { opacity: 0; transform: translateY(10px) scale(0.9); }
+      60% { opacity: 1; transform: translateY(-3px) scale(1.04); }
+      100% { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      #s-hire-result-ok.result-anim .hire-result-title,
+      #s-hire-result-ok.result-anim .hire-result-sub,
+      #s-hire-result-ok.result-anim .hire-sparkles span,
+      #s-hire-result-ok.result-anim .hire-stat,
+      #s-hire-result-ng.result-anim .hire-result--ng,
+      #s-hire-result-ng.result-anim .hire-result-title,
+      #s-hire-result-ng.result-anim .hire-result-card,
+      #s-retire-result.result-anim .resign-result--ng,
+      #s-retire-result.result-anim .resign-result-title,
+      #s-retire-result.result-anim .resign-result-sub,
+      #s-retire-result.result-anim .resign-illus,
+      #s-retire-result.result-anim .resign-reason,
+      #s-retire-prevented.result-anim .resign-result--ok,
+      #s-retire-prevented.result-anim .resign-result-title,
+      #s-retire-prevented.result-anim .resign-result-sub,
+      #s-retire-prevented.result-anim .resign-sparkles span,
+      #s-retire-prevented.result-anim .resign-illus,
+      #s-retire-prevented.result-anim .resign-reason {
+        animation: none !important;
+        opacity: 1 !important;
+        transform: none !important;
+        filter: none !important;
+      }
+    }
+
+    .cand-illus { width: 72px; height: 72px; flex-shrink: 0; display: block; border-radius: 16px; }
+    .risk-label { font-size: 10px; opacity: 0.6; text-align: center; margin-top: 4px; }
+    .pay-amount {
+      font-family: "Zen Maru Gothic", sans-serif;
+      font-size: 56px;
+      font-weight: 900;
+      line-height: 1;
+      color: #0F4C5C;
+    }
+
+    /* Physical game-card face — primary visual after QR scan */
+    .phys-card-wrap {
+      display: flex;
+      justify-content: center;
+      padding: 2px 0 4px;
+    }
+    .phys-card {
+      width: 100%;
+      max-width: 292px;
+      aspect-ratio: 63 / 88;
+      border-radius: 14px;
+      border: 3px solid #14212B;
+      background:
+        linear-gradient(180deg, #fff 0%, #F7FAFB 100%);
+      box-shadow:
+        0 1px 0 rgba(255,255,255,0.7) inset,
+        0 10px 28px rgba(20, 33, 43, 0.18);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      position: relative;
+    }
+    .phys-card::before {
+      content: "";
+      position: absolute;
+      inset: 5px;
+      border: 1px solid rgba(15, 76, 92, 0.22);
+      border-radius: 10px;
+      pointer-events: none;
+      z-index: 1;
+    }
+    .phys-card .pc-band {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 12px 8px;
+      background: linear-gradient(90deg, #0F4C5C, #1A7A8C);
+      color: #fff;
+      flex-shrink: 0;
+      position: relative;
+      z-index: 2;
+    }
+    .phys-card.hire .pc-band {
+      background: linear-gradient(90deg, #1A5C4A, #2F9B6A);
+    }
+    .phys-card .pc-kind {
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      opacity: 0.9;
+    }
+    .phys-card .pc-wp {
+      font-family: "Zen Maru Gothic", sans-serif;
+      font-size: 13px;
+      font-weight: 900;
+      background: #E8A838;
+      color: #14212B;
+      padding: 3px 10px;
+      border-radius: 999px;
+      white-space: nowrap;
+    }
+    .phys-card .pc-title {
+      font-family: "Zen Maru Gothic", sans-serif;
+      font-size: 17px;
+      font-weight: 900;
+      line-height: 1.25;
+      padding: 10px 14px 6px;
+      color: #14212B;
+      flex-shrink: 0;
+      position: relative;
+      z-index: 2;
+    }
+    .phys-card .pc-name {
+      font-family: "Zen Maru Gothic", sans-serif;
+      font-size: 22px;
+      font-weight: 900;
+      padding: 8px 14px 4px;
+      color: #14212B;
+      flex-shrink: 0;
+      position: relative;
+      z-index: 2;
+    }
+    .phys-card .pc-art {
+      margin: 0 12px;
+      border-radius: 10px;
+      overflow: hidden;
+      flex: 1;
+      min-height: 0;
+      background:
+        radial-gradient(ellipse 70% 60% at 50% 40%, #E8F2F4, #d5e6ea 70%, #c5d8de);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      z-index: 2;
+      border: 1px solid rgba(15, 76, 92, 0.15);
+    }
+    .phys-card.hire .pc-art {
+      flex: 0 0 auto;
+      aspect-ratio: 1.4;
+      margin-top: 2px;
+      background:
+        radial-gradient(ellipse 70% 60% at 50% 35%, #E8F4EE, #d4e8df 70%, #c0d9cc);
+    }
+    .phys-card .pc-art svg {
+      width: 58%;
+      max-height: 72%;
+      display: block;
+    }
+    .phys-card .pc-body {
+      padding: 10px 12px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      flex-shrink: 0;
+      position: relative;
+      z-index: 2;
+    }
+    .phys-card .pc-row-label {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      color: #5a6b72;
+      margin-bottom: 4px;
+    }
+    .phys-card .pc-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+    }
+    .phys-card .pc-chip {
+      display: inline-flex;
+      align-items: center;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 6px;
+      border: 1px solid #CED8DC;
+      background: #fff;
+      color: #0F4C5C;
+    }
+    .phys-card .pc-chip.fx {
+      border-color: #E8A838;
+      background: #FFF6E6;
+      color: #8a5a10;
+    }
+    .phys-card .pc-text {
+      font-size: 12px;
+      line-height: 1.45;
+      background: #fff;
+      border: 1px solid #CED8DC;
+      border-radius: 8px;
+      padding: 8px 10px;
+      color: #14212B;
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="meta">
+      <strong class="brand-mark">DEIDEI</strong> プロトタイプ UIモック（daisyUI）
+      · <a href="../prototype-wireframes/">ワイヤーフレーム</a>
+      · <a href="./README.md">README</a>
+    </div>
+
+    <div class="mock-tools">
+      <div class="note">モック操作用（本アプリのUIではない）</div>
+      <div class="flex gap-2 items-center flex-wrap">
+        <select id="screenSelect" class="select select-bordered select-sm flex-1 min-w-[180px]" aria-label="画面一覧"></select>
+        <button type="button" id="prevBtn" class="btn btn-sm btn-outline">← 前</button>
+        <button type="button" id="nextBtn" class="btn btn-sm btn-outline">次 →</button>
+      </div>
+      <div id="mockDemoLinks" class="flex flex-col gap-1"></div>
+    </div>
+
+    <div class="phone" id="phone">
+      <div class="phone-status"><span>9:41</span><span class="brand-mark text-[11px]">DEIDEI</span><span>100%</span></div>
+
+      <!-- P-01 -->
+      <section class="screen active" id="s-home" data-title="P-01 TOP（参加者向け）">
+        <div class="body relative flex flex-col justify-center gap-4 text-center pt-8">
+          <a href="#s-admin-login" class="absolute top-2 right-1 link link-hover text-xs opacity-40">admin</a>
+          <div class="mx-auto w-20 h-20 rounded-2xl bg-primary text-primary-content flex items-center justify-center brand-mark text-2xl shadow-md">D</div>
+          <h1 class="brand-mark text-3xl text-primary leading-tight">DEIDEI<br />CardGame</h1>
+          <p class="text-sm opacity-70">研修用カードゲーム</p>
+          <a href="#s-join" class="btn btn-primary btn-lg rounded-xl">参加する</a>
+        </div>
+      </section>
+
+      <!-- P-02 -->
+      <section class="screen" id="s-join" data-title="P-02 参加（コード・表示名）">
+        <div class="navbar bg-base-100 border-b border-base-300 min-h-12 px-2">
+          <a href="#s-home" class="btn btn-outline btn-sm" style="border:1px solid #14212B;background:#fff;color:#14212B">戻る</a>
+          <span class="font-bold text-sm">セッションに参加</span>
+        </div>
+        <div class="body space-y-4">
+          <label class="form-control">
+            <span class="label-text text-xs opacity-60">参加コード（6桁）</span>
+            <div class="code-cells" aria-label="参加コード6桁">
+              <div class="cell">A</div><div class="cell">7</div><div class="cell">K</div>
+              <div class="cell">2</div><div class="cell">M</div><div class="cell">9</div>
+            </div>
+          </label>
+          <label class="form-control">
+            <span class="label-text text-xs opacity-60">表示名</span>
+            <input class="input input-bordered" value="たろう" readonly />
+          </label>
+          <p class="text-xs opacity-60">同一セッション内で表示名が重複すると参加できません。</p>
+        </div>
+        <div class="p-3"><a href="#s-join-wait" class="btn btn-primary w-full rounded-xl">参加する</a></div>
+      </section>
+
+      <!-- P-03 -->
+      <section class="screen" id="s-join-error" data-title="P-03 参加エラー">
+        <div class="navbar bg-base-100 border-b border-base-300 min-h-12 px-2">
+          <a href="#s-join" class="btn btn-outline btn-sm" style="border:1px solid #14212B;background:#fff;color:#14212B">戻る</a>
+          <span class="font-bold text-sm">参加できません</span>
+        </div>
+        <div class="body space-y-4">
+          <div class="alert alert-error text-sm">参加コードが正しくないか、表示名が既に使われています。</div>
+          <div class="code-cells opacity-50">
+            <div class="cell">X</div><div class="cell">X</div><div class="cell">X</div>
+            <div class="cell">X</div><div class="cell">X</div><div class="cell">X</div>
+          </div>
+          <a href="#s-join" class="btn btn-outline w-full rounded-xl">入力しなおす</a>
+        </div>
+      </section>
+
+      <!-- P-04 -->
+      <section class="screen" id="s-join-wait" data-title="P-04 待機・同期">
+        <div class="navbar bg-base-100 border-b border-base-300 min-h-12 px-2">
+          <span class="font-bold text-sm px-2">待機中</span>
+          <span class="badge badge-ghost ml-auto">同期</span>
+        </div>
+        <div class="body space-y-4">
+          <div class="bg-sea-mist rounded-2xl p-6 text-center">
+            <span class="loading loading-dots loading-md text-primary"></span>
+            <p class="font-bold mt-2">ファシリテーターの開始を待っています</p>
+          </div>
+          <div class="card bg-base-100 border border-base-300">
+            <div class="card-body p-4 gap-2">
+              <div class="text-xs opacity-60">参加者</div>
+              <div class="flex justify-between"><span>たろう</span><span class="badge badge-primary badge-sm">あなた</span></div>
+              <div class="flex justify-between"><span>はなこ</span><span class="badge badge-ghost badge-sm">参加済</span></div>
+              <div class="flex justify-between"><span>じろう</span><span class="badge badge-ghost badge-sm">参加済</span></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- P-05 -->
+      <section class="screen" id="s-ready" data-title="P-05 プレイ準備" data-play="1">
+        <div class="navbar bg-base-100 border-b border-base-300 min-h-12 px-3 justify-between">
+          <span class="font-bold text-sm">プレイ準備</span>
+          <span class="badge badge-outline">ターン 1/5</span>
+        </div>
+        <div class="body space-y-4 text-center">
+          <p class="text-sm opacity-70">まもなく給与フェーズへ</p>
+          <div class="brand-mark text-5xl text-primary"><span id="readyCountdown">10</span><span class="text-lg">秒</span></div>
+          <div class="card bg-base-100 border border-base-300 text-left">
+            <div class="card-body p-4">
+              <div class="text-xs opacity-60 mb-1">手番順</div>
+              <ol class="list-decimal list-inside text-sm space-y-1">
+                <li>たろう（あなた）</li><li>はなこ</li><li>じろう</li>
+              </ol>
+            </div>
+          </div>
+        </div>
+        <div class="game-bar" data-status="play" data-whose="開始前（準備）" data-coin="0" data-score="—" data-emp="2" data-rank="—"></div>
+      </section>
+
+      <!-- P-06 -->
+      <section class="screen" id="s-turn-salary" data-title="P-06 給与" data-play="1" data-salary-state="confirm">
+        <div class="navbar bg-base-100 border-b border-base-300 min-h-12 px-3 gap-2">
+          <div class="phase-crumb flex-1">
+            <span class="pc on">給与</span><span class="sep">＞</span><span class="pc">退職</span><span class="sep">＞</span><span class="pc">ソリューション</span><span class="sep">＞</span><span class="pc">採用</span>
+          </div>
+          <span class="badge badge-outline badge-sm">1/5</span>
+        </div>
+        <div class="body space-y-3">
+          <div class="salary-state" data-salary-view="confirm">
+            <div class="rounded-2xl bg-gradient-to-b from-sea-mist to-base-100 border border-base-300 p-5 text-center">
+              <div class="text-xs opacity-60">受け取ったコイン</div>
+              <div class="pay-amount">+8</div>
+              <div class="text-sm font-bold text-secondary">コイン</div>
+              <div class="badge badge-ghost mt-2">仕事力 4 × 2</div>
+            </div>
+            <div class="flex justify-between items-center bg-base-100 border border-base-300 rounded-xl px-4 py-3 mt-3">
+              <span class="text-xs opacity-60">残高（反映後）</span>
+              <span class="brand-mark text-2xl">8</span>
+            </div>
+            <div class="mt-3 text-sm flex justify-between"><span>確認状況</span><strong>1 / 3 人が確認済み</strong></div>
+          </div>
+          <div class="salary-state" data-salary-view="wait" hidden>
+            <div class="rounded-2xl bg-base-200 p-8 text-center">
+              <span class="loading loading-ring loading-lg text-primary"></span>
+              <p class="font-bold mt-3">しばらくお待ちください</p>
+              <p class="text-xs opacity-60 mt-1">確認済みです。他の参加者の確認を待っています</p>
+            </div>
+            <div class="flex justify-between items-center bg-base-100 border border-base-300 rounded-xl px-4 py-3 mt-3">
+              <span class="text-xs opacity-60">残高</span>
+              <span class="brand-mark text-2xl">8</span>
+            </div>
+            <div class="mt-3 text-sm flex justify-between"><span>確認状況</span><strong>2 / 3 人が確認済み</strong></div>
+          </div>
+        </div>
+        <div class="p-3 salary-state" data-salary-view="confirm">
+          <button type="button" id="salaryConfirmBtn" class="btn btn-primary w-full rounded-xl">確認</button>
+        </div>
+        <div class="game-bar" data-status="salary" data-whose="一斉確認" data-coin="0" data-score="4" data-emp="2" data-rank="2位"></div>
+      </section>
+
+      <!-- P-07 -->
+      <section class="screen" id="s-retire-dice" data-title="P-07 退職：出目入力" data-play="1">
+        <div class="navbar bg-base-100 border-b border-base-300 min-h-12 px-3 gap-2">
+          <div class="phase-crumb flex-1">
+            <span class="pc">給与</span><span class="sep">＞</span><span class="pc on">退職</span><span class="sep">＞</span><span class="pc">ソリューション</span><span class="sep">＞</span><span class="pc">採用</span>
+          </div>
+          <span class="badge badge-outline badge-sm">1/5</span>
+        </div>
+        <div class="body space-y-3">
+          <div class="card bg-base-100 border border-base-300">
+            <div class="card-body p-4 flex-row gap-3 items-start">
+              <div>
+                <svg class="cand-illus" viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+  <rect width="80" height="80" rx="16" fill="#E8F2F4"/>
+  <circle cx="40" cy="30" r="14" fill="#1A7A8C"/>
+  <ellipse cx="40" cy="62" rx="22" ry="16" fill="#1A7A8C"/>
+</svg>
+                <div class="risk-label">退職リスク対象</div>
+              </div>
+              <div class="flex-1">
+                <div class="text-xs opacity-60">退職判定の対象</div>
+                <div class="flex justify-between items-center">
+                  <span class="font-bold text-lg">リー</span>
+                  <span class="badge badge-primary">仕事力 3</span>
+                </div>
+                <div class="flex gap-1 mt-1"><span class="badge badge-outline badge-sm">キャリア</span></div>
+              </div>
+            </div>
+          </div>
+          <p class="text-sm font-medium">リアルのサイコロの出目を選んでください</p>
+          <div class="dice-grid" id="diceFaces">
+            <button type="button" class="die-face">1</button>
+            <button type="button" class="die-face">2</button>
+            <button type="button" class="die-face on">3</button>
+            <button type="button" class="die-face">4</button>
+            <button type="button" class="die-face">5</button>
+            <button type="button" class="die-face">6</button>
+          </div>
+        </div>
+        <div class="p-3"><a href="#s-retire-result" class="btn btn-primary w-full rounded-xl">この出目で判定</a></div>
+        <div class="game-bar" data-status="play" data-whose="自分の手番・たろう" data-coin="8" data-score="4" data-emp="2" data-rank="2位" data-mine="1"></div>
+      </section>
+
+      <!-- P-08 -->
+      <section class="screen" id="s-retire-result" data-title="P-08 退職：結果（退職）" data-play="1">
+        <div class="navbar bg-base-100 border-b border-base-300 min-h-12 px-3 gap-2">
+          <div class="phase-crumb flex-1">
+            <span class="pc">給与</span><span class="sep">＞</span><span class="pc on">退職</span><span class="sep">＞</span><span class="pc">ソリューション</span><span class="sep">＞</span><span class="pc">採用</span>
+          </div>
+          <span class="badge badge-outline badge-sm">1/5</span>
+        </div>
+        <div class="body space-y-3">
+          <div class="resign-result resign-result--ng">
+            <div class="flex justify-center mb-3"><svg class="cand-illus resign-illus" viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+  <rect width="80" height="80" rx="16" fill="#E8F2F4"/>
+  <circle cx="40" cy="30" r="14" fill="#1A7A8C"/>
+  <ellipse cx="40" cy="62" rx="22" ry="16" fill="#1A7A8C"/>
+</svg></div>
+            <div class="brand-mark resign-result-title text-3xl text-error">退職</div>
+            <p class="resign-result-sub text-sm mt-1 opacity-70">リーは退職しました</p>
+          </div>
+          <div class="alert text-sm resign-reason">出目 <strong>3（奇数）</strong>／離職防止なし → 退職。従業員 2→1。</div>
+        </div>
+        <div class="p-3"><a href="#s-solution-draw" class="btn btn-primary w-full rounded-xl">次へ</a></div>
+        <div class="game-bar" data-status="play" data-whose="自分の手番・たろう" data-coin="8" data-score="4" data-emp="1" data-rank="2位" data-mine="1"></div>
+      </section>
+
+      <!-- P-09 -->
+      <section class="screen" id="s-retire-prevented" data-title="P-09 退職：結果（残留）" data-play="1">
+        <div class="navbar bg-base-100 border-b border-base-300 min-h-12 px-3 gap-2">
+          <div class="phase-crumb flex-1">
+            <span class="pc">給与</span><span class="sep">＞</span><span class="pc on">退職</span><span class="sep">＞</span><span class="pc">ソリューション</span><span class="sep">＞</span><span class="pc">採用</span>
+          </div>
+          <span class="badge badge-outline badge-sm">1/5</span>
+        </div>
+        <div class="body space-y-3">
+          <div class="resign-result resign-result--ok">
+            <div class="resign-sparkles" aria-hidden="true">
+              <span></span><span></span><span></span><span></span>
+            </div>
+            <div class="flex justify-center mb-3"><svg class="cand-illus resign-illus" viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+  <rect width="80" height="80" rx="16" fill="#E8F2F4"/>
+  <circle cx="40" cy="30" r="14" fill="#1A7A8C"/>
+  <ellipse cx="40" cy="62" rx="22" ry="16" fill="#1A7A8C"/>
+</svg></div>
+            <div class="brand-mark resign-result-title text-3xl text-success">残留</div>
+            <p class="resign-result-sub text-sm mt-1 opacity-70">佐藤は離職防止で踏みとどまった</p>
+          </div>
+          <div class="alert alert-success text-sm resign-reason">出目は奇数だが、離職防止（くらし）により残留。</div>
+        </div>
+        <div class="p-3"><a href="#s-solution-draw" class="btn btn-primary w-full rounded-xl">次へ</a></div>
+        <div class="game-bar" data-status="play" data-whose="自分の手番・たろう" data-coin="8" data-score="4" data-emp="2" data-rank="2位" data-mine="1"></div>
+      </section>
+
+      <!-- P-10 -->
+      <section class="screen" id="s-solution-draw" data-title="P-10 ソリューション：カード読取" data-play="1">
+        <div class="navbar bg-base-100 border-b border-base-300 min-h-12 px-3 gap-2">
+          <div class="phase-crumb flex-1">
+            <span class="pc">給与</span><span class="sep">＞</span><span class="pc">退職</span><span class="sep">＞</span><span class="pc on">ソリューション</span><span class="sep">＞</span><span class="pc">採用</span>
+          </div>
+          <span class="badge badge-outline badge-sm">1/5</span>
+        </div>
+        <div class="body space-y-3">
+          <div class="flex justify-between text-sm bg-base-200 rounded-xl px-3 py-2"><span>コスト</span><strong>1枚 = 1コイン</strong></div>
+          <div class="qr-stage">
+            <div class="text-3xl">▣</div>
+            <div class="font-bold">カメラでカードQRを読取</div>
+          </div>
+        </div>
+        <div class="p-3 flex gap-2">
+          <a href="#s-hire-select" class="btn btn-outline flex-1 rounded-xl" style="border:1px solid #14212B;background:#fff;color:#14212B">完了</a>
+          <a href="#s-solution-detail" class="btn btn-primary flex-1 rounded-xl" style="border:1px solid #0F4C5C">読取へ</a>
+        </div>
+        <div class="game-bar" data-status="play" data-whose="自分の手番・たろう" data-coin="8" data-score="4" data-emp="1" data-rank="2位" data-mine="1"></div>
+      </section>
+
+      <!-- P-11 -->
+      <section class="screen" id="s-solution-detail" data-title="P-11 ソリューション：詳細" data-play="1" data-solution-state="detail">
+        <div class="navbar bg-base-100 border-b border-base-300 min-h-12 px-3 gap-2">
+          <div class="phase-crumb flex-1">
+            <span class="pc">給与</span><span class="sep">＞</span><span class="pc">退職</span><span class="sep">＞</span><span class="pc on">ソリューション</span><span class="sep">＞</span><span class="pc">採用</span>
+          </div>
+          <span class="badge badge-outline badge-sm">1/5</span>
+        </div>
+        <div class="body">
+          <div class="phys-card-wrap">
+            <article class="phys-card" aria-label="ソリューションカード面：リモートワーク制度">
+              <div class="pc-band">
+                <span class="pc-kind">SOLUTION</span>
+                <span class="pc-wp">仕事力 +2</span>
+              </div>
+              <div class="pc-title">リモートワーク制度</div>
+              <div class="pc-art">
+                <svg viewBox="0 0 140 100" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                  <rect x="10" y="36" width="54" height="42" rx="4" fill="#fff" stroke="#0F4C5C" stroke-width="2.5"/>
+                  <rect x="18" y="44" width="38" height="24" rx="2" fill="#1A7A8C" opacity="0.35"/>
+                  <rect x="76" y="22" width="52" height="56" rx="6" fill="#fff" stroke="#0F4C5C" stroke-width="2.5"/>
+                  <circle cx="102" cy="42" r="11" fill="#1A7A8C"/>
+                  <ellipse cx="102" cy="66" rx="18" ry="11" fill="#1A7A8C"/>
+                  <path d="M64 56 H76" stroke="#E8A838" stroke-width="3" stroke-linecap="round"/>
+                </svg>
+              </div>
+              <div class="pc-body">
+                <div>
+                  <div class="pc-row-label">属性</div>
+                  <div class="pc-chips">
+                    <span class="pc-chip">くらし</span>
+                    <span class="pc-chip">キャリア</span>
+                  </div>
+                </div>
+                <div>
+                  <div class="pc-row-label">効果</div>
+                  <div class="pc-chips">
+                    <span class="pc-chip fx">採用</span>
+                    <span class="pc-chip fx">離職防止</span>
+                  </div>
+                </div>
+              </div>
+            </article>
+          </div>
+          <div class="solution-state" data-solution-view="applied" hidden>
+            <div class="sol-effect">
+              <div class="text-xs opacity-60">仕事力</div>
+              <div class="sol-effect-wp">4 → 6</div>
+              <div class="sol-effect-delta">+2</div>
+              <div class="sol-effect-coin text-sm mt-3 flex justify-between px-1"><span>コイン消費</span><strong>−1（残高 7）</strong></div>
+            </div>
+          </div>
+        </div>
+        <div class="p-3 flex gap-2 solution-state" data-solution-view="detail">
+          <a href="#s-solution-draw" class="btn btn-outline flex-1 rounded-xl" style="border:1px solid #14212B;background:#fff;color:#14212B">戻る</a>
+          <button type="button" id="solutionDecideBtn" class="btn btn-primary flex-1 rounded-xl">決定</button>
+        </div>
+        <div class="p-3 solution-state" data-solution-view="applied" hidden>
+          <a href="#s-solution-extra" class="btn btn-primary w-full rounded-xl">次へ</a>
+        </div>
+        <div class="game-bar" data-status="play" data-whose="自分の手番・たろう" data-coin="8" data-score="4" data-emp="1" data-rank="2位" data-mine="1"></div>
+      </section>
+
+      <!-- P-12 -->
+      <section class="screen" id="s-solution-extra" data-title="P-12 ソリューション：追加で引くか" data-play="1">
+        <div class="navbar bg-base-100 border-b border-base-300 min-h-12 px-3 gap-2">
+          <div class="phase-crumb flex-1">
+            <span class="pc">給与</span><span class="sep">＞</span><span class="pc">退職</span><span class="sep">＞</span><span class="pc on">ソリューション</span><span class="sep">＞</span><span class="pc">採用</span>
+          </div>
+          <span class="badge badge-outline badge-sm">1/5</span>
+        </div>
+        <div class="body space-y-4 text-center">
+          <div class="bg-base-200 rounded-2xl p-6">
+            <p class="brand-mark text-xl">一巡が終わりました</p>
+            <p class="text-sm opacity-70 mt-2">追加でソリューションカードを引きますか？</p>
+          </div>
+          <div class="text-sm flex justify-between bg-base-100 border rounded-xl px-4 py-3"><span>残高</span><strong>7 コイン</strong></div>
+        </div>
+        <div class="p-3 flex gap-2">
+          <a href="#s-hire-select" class="btn btn-outline flex-1 rounded-xl" style="border:1px solid #14212B;background:#fff;color:#14212B">引かない</a>
+          <a href="#s-solution-draw" class="btn btn-primary flex-1 rounded-xl">追加で引く</a>
+        </div>
+        <div class="game-bar" data-status="play" data-whose="自分の手番・たろう" data-coin="7" data-score="6" data-emp="1" data-rank="2位" data-mine="1"></div>
+      </section>
+
+      <!-- P-13 -->
+      <section class="screen" id="s-hire-select" data-title="P-13 採用：カード読取" data-play="1">
+        <div class="navbar bg-base-100 border-b border-base-300 min-h-12 px-3 gap-2">
+          <div class="phase-crumb flex-1">
+            <span class="pc">給与</span><span class="sep">＞</span><span class="pc">退職</span><span class="sep">＞</span><span class="pc">ソリューション</span><span class="sep">＞</span><span class="pc on">採用</span>
+          </div>
+          <span class="badge badge-outline badge-sm">1/5</span>
+        </div>
+        <div class="body space-y-3">
+          <div class="flex justify-between text-sm bg-base-200 rounded-xl px-3 py-2"><span>コスト</span><strong>1人 = 1コイン</strong></div>
+          <div class="qr-stage">
+            <div class="text-3xl">▣</div>
+            <div class="font-bold">採用カードのQRを読取</div>
+            <div class="text-xs opacity-70">バッティングはプロトタイプ対象外</div>
+          </div>
+        </div>
+        <div class="p-3 flex gap-2">
+          <a href="#s-done-skip" class="btn btn-outline flex-1 rounded-xl" style="border:1px solid #14212B;background:#fff;color:#14212B">完了</a>
+          <a href="#s-hire-detail" class="btn btn-primary flex-1 rounded-xl" style="border:1px solid #0F4C5C">読取へ</a>
+        </div>
+        <div class="game-bar" data-status="play" data-whose="自分の手番・たろう" data-coin="7" data-score="6" data-emp="1" data-rank="2位" data-mine="1"></div>
+      </section>
+
+      <!-- P-14 -->
+      <section class="screen" id="s-hire-detail" data-title="P-14 採用：候補詳細" data-play="1">
+        <div class="navbar bg-base-100 border-b border-base-300 min-h-12 px-3 gap-2">
+          <div class="phase-crumb flex-1">
+            <span class="pc">給与</span><span class="sep">＞</span><span class="pc">退職</span><span class="sep">＞</span><span class="pc">ソリューション</span><span class="sep">＞</span><span class="pc on">採用</span>
+          </div>
+          <span class="badge badge-outline badge-sm">1/5</span>
+        </div>
+        <div class="body">
+          <div class="phys-card-wrap">
+            <article class="phys-card hire" aria-label="採用カード面：キム">
+              <div class="pc-band">
+                <span class="pc-kind">HIRE</span>
+                <span class="pc-wp">仕事力 3</span>
+              </div>
+              <div class="pc-name">キム</div>
+              <div class="pc-art">
+                <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                  <circle cx="50" cy="38" r="18" fill="#2F9B6A"/>
+                  <ellipse cx="50" cy="78" rx="28" ry="20" fill="#2F9B6A"/>
+                  <circle cx="44" cy="36" r="2.5" fill="#fff"/>
+                  <circle cx="56" cy="36" r="2.5" fill="#fff"/>
+                  <path d="M44 46 Q50 50 56 46" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+              </div>
+              <div class="pc-body">
+                <div>
+                  <div class="pc-row-label">属性</div>
+                  <div class="pc-chips">
+                    <span class="pc-chip">くらし</span>
+                    <span class="pc-chip">キャリア</span>
+                  </div>
+                </div>
+                <div>
+                  <div class="pc-row-label">志望動機・経歴</div>
+                  <div class="pc-text">リモートとキャリア成長の両立を重視。前職ではチーム運営を経験。</div>
+                </div>
+              </div>
+            </article>
+          </div>
+        </div>
+        <div class="p-3 flex gap-2">
+          <a href="#s-hire-select" class="btn btn-outline flex-1 rounded-xl" style="border:1px solid #14212B;background:#fff;color:#14212B">考え直す</a>
+          <a href="#s-hire-result-ok" class="btn btn-primary flex-1 rounded-xl">合格通知を出す</a>
+        </div>
+        <div class="game-bar" data-status="play" data-whose="自分の手番・たろう" data-coin="7" data-score="6" data-emp="1" data-rank="2位" data-mine="1"></div>
+      </section>
+
+      <section class="screen" id="s-hire-result-ok" data-title="P-15 採用：成功" data-play="1">
+        <div class="navbar bg-base-100 border-b border-base-300 min-h-12 px-3 gap-2">
+          <div class="phase-crumb flex-1">
+            <span class="pc">給与</span><span class="sep">＞</span><span class="pc">退職</span><span class="sep">＞</span><span class="pc">ソリューション</span><span class="sep">＞</span><span class="pc on">採用</span>
+          </div>
+          <span class="badge badge-outline badge-sm">1/5</span>
+        </div>
+        <div class="body space-y-3">
+          <div class="hire-result hire-result--ok">
+            <div class="hire-sparkles" aria-hidden="true">
+              <span></span><span></span><span></span><span></span><span></span><span></span>
+            </div>
+            <div class="brand-mark hire-result-title text-3xl text-success">採用できた</div>
+            <p class="hire-result-sub text-sm mt-1 opacity-70">条件を満たしています</p>
+          </div>
+          <div class="card bg-base-100 border border-base-300">
+            <div class="card-body p-4">
+              <div class="flex justify-between"><span class="font-bold text-lg">キム</span><span class="badge">仕事力 3</span></div>
+              <div class="flex gap-1 mt-1"><span class="badge badge-outline badge-sm">くらし</span><span class="badge badge-outline badge-sm">キャリア</span></div>
+            </div>
+          </div>
+          <ul class="text-sm space-y-1 px-1 hire-stat-list">
+            <li class="flex justify-between hire-stat"><span>コイン</span><strong>−1</strong></li>
+            <li class="flex justify-between hire-stat"><span>従業員</span><strong>1 → 2</strong></li>
+            <li class="flex justify-between hire-stat"><span>仕事力</span><strong>6 → 9</strong></li>
+          </ul>
+        </div>
+        <div class="p-3 flex gap-2">
+          <a href="#s-hire-select" class="btn btn-outline flex-1 rounded-xl" style="border:1px solid #14212B;background:#fff;color:#14212B">続けて採用</a>
+          <a href="#s-done-skip" class="btn btn-primary flex-1 rounded-xl">done</a>
+        </div>
+        <div class="game-bar" data-status="play" data-whose="自分の手番・たろう" data-coin="6" data-score="9" data-emp="2" data-rank="1位" data-mine="1"></div>
+      </section>
+
+      <section class="screen" id="s-hire-result-ng" data-title="P-16 採用：できない" data-play="1">
+        <div class="navbar bg-base-100 border-b border-base-300 min-h-12 px-3 gap-2">
+          <div class="phase-crumb flex-1">
+            <span class="pc">給与</span><span class="sep">＞</span><span class="pc">退職</span><span class="sep">＞</span><span class="pc">ソリューション</span><span class="sep">＞</span><span class="pc on">採用</span>
+          </div>
+          <span class="badge badge-outline badge-sm">1/5</span>
+        </div>
+        <div class="body space-y-3">
+          <div class="hire-result hire-result--ng">
+            <div class="brand-mark hire-result-title text-3xl">採用できない</div>
+            <p class="hire-result-sub text-sm mt-1 opacity-70">属性カバーが不足しています</p>
+          </div>
+          <div class="card bg-base-100 border border-base-300 hire-result-card">
+            <div class="card-body p-4">
+              <div class="flex justify-between"><span class="font-bold text-lg">ワン</span><span class="badge">仕事力 4</span></div>
+              <div class="flex gap-1 mt-1"><span class="badge badge-outline badge-sm">グローバル</span><span class="badge badge-outline badge-sm">フェア</span></div>
+            </div>
+          </div>
+          <div class="alert alert-warning text-sm">必要な【採用】ソリューションが未実施。コイン −1 は消費されます。</div>
+        </div>
+        <div class="p-3 flex gap-2">
+          <a href="#s-hire-select" class="btn btn-outline flex-1 rounded-xl" style="border:1px solid #14212B;background:#fff;color:#14212B">別の候補</a>
+          <a href="#s-done-skip" class="btn btn-primary flex-1 rounded-xl">done</a>
+        </div>
+        <div class="game-bar" data-status="play" data-whose="自分の手番・たろう" data-coin="6" data-score="6" data-emp="1" data-rank="2位" data-mine="1"></div>
+      </section>
+
+      <!-- P-17 -->
+      <section class="screen" id="s-done-skip" data-title="P-17 手番完了／他者待ち" data-play="1">
+        <div class="navbar bg-base-100 border-b border-base-300 min-h-12 px-3 gap-2">
+          <div class="phase-crumb flex-1">
+            <span class="pc">給与</span><span class="sep">＞</span><span class="pc">退職</span><span class="sep">＞</span><span class="pc">ソリューション</span><span class="sep">＞</span><span class="pc on">採用</span>
+          </div>
+          <span class="badge badge-outline badge-sm">1/5</span>
+        </div>
+        <div class="body space-y-4">
+          <div class="rounded-2xl bg-base-200 p-8 text-center">
+            <span class="loading loading-dots loading-md text-primary"></span>
+            <p class="font-bold mt-2">他の参加者の手番です</p>
+            <p class="text-xs opacity-60">いま：はなこ（採用）</p>
+          </div>
+          <div class="text-sm bg-base-100 border rounded-xl p-3">たろう（済）→ <strong>はなこ</strong> → じろう</div>
+        </div>
+        <div class="game-bar" data-status="play" data-whose="他者の手番・はなこ" data-coin="6" data-score="9" data-emp="2" data-rank="1位"></div>
+      </section>
+
+      <!-- P-18 -->
+      <section class="screen" id="s-list-solutions" data-title="P-18 ソリューション一覧">
+        <div class="navbar bg-base-100 border-b border-base-300 min-h-12 px-2">
+          <a class="btn btn-outline btn-sm" id="back-from-sol" href="#s-turn-salary" style="border:1px solid #14212B;background:#fff;color:#14212B">戻る</a>
+          <span class="font-bold text-sm">ソリューション一覧</span>
+        </div>
+        <div class="body space-y-3">
+          <div class="card bg-base-100 border-l-4 border-l-accent border border-base-300">
+            <div class="card-body p-4 gap-2">
+              <h3 class="font-bold">リモートワーク制度</h3>
+              <div class="flex flex-wrap gap-1">
+                <span class="badge badge-outline badge-sm">くらし</span>
+                <span class="badge badge-outline badge-sm">キャリア</span>
+                <span class="badge badge-secondary badge-sm">採用</span>
+                <span class="badge badge-secondary badge-sm">離職防止</span>
+              </div>
+              <span class="badge badge-ghost badge-outline border-dashed">仕事力 +2</span>
+            </div>
+          </div>
+          <div class="card bg-base-100 border border-base-300 opacity-60">
+            <div class="card-body p-4"><h3 class="font-bold text-sm">（未実施の例）</h3><p class="text-xs">一覧参照用プレースホルダ</p></div>
+          </div>
+        </div>
+        <div class="p-3"><a id="foot-back-sol" href="#s-turn-salary" class="btn btn-primary w-full rounded-xl">戻る</a></div>
+      </section>
+
+      <!-- P-19 -->
+      <section class="screen" id="s-list-employees" data-title="P-19 従業員一覧">
+        <div class="navbar bg-base-100 border-b border-base-300 min-h-12 px-2">
+          <a class="btn btn-outline btn-sm" id="back-from-emp" href="#s-turn-salary" style="border:1px solid #14212B;background:#fff;color:#14212B">戻る</a>
+          <span class="font-bold text-sm">従業員一覧</span>
+        </div>
+        <div class="body space-y-3">
+          <div class="card bg-base-100 border-l-4 border-l-secondary border border-base-300">
+            <div class="card-body p-4 flex-row justify-between items-center">
+              <div><div class="text-xs opacity-60">社長</div><div class="font-bold">あなた</div></div>
+              <span class="badge badge-secondary">仕事力 2</span>
+            </div>
+          </div>
+          <div class="card bg-base-100 border border-base-300">
+            <div class="card-body p-4">
+              <div class="flex justify-between"><span class="font-bold">佐藤</span><span class="badge">仕事力 4</span></div>
+              <div class="flex gap-1 mt-2"><span class="badge badge-outline badge-sm">くらし</span><span class="badge badge-success badge-sm">離職防止</span></div>
+            </div>
+          </div>
+          <div class="card bg-base-100 border border-base-300">
+            <div class="card-body p-4">
+              <div class="flex justify-between"><span class="font-bold">キム</span><span class="badge">仕事力 3</span></div>
+              <div class="flex gap-1 mt-2"><span class="badge badge-outline badge-sm">くらし</span><span class="badge badge-outline badge-sm">キャリア</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="p-3"><a id="foot-back-emp" href="#s-turn-salary" class="btn btn-primary w-full rounded-xl">戻る</a></div>
+      </section>
+
+      <!-- P-20 -->
+      <section class="screen" id="s-end" data-title="P-20 終了（スコア・順位）">
+        <div class="body space-y-4 pt-4">
+          <div class="text-center">
+            <p class="text-xs opacity-60">ゲーム終了</p>
+            <h1 class="brand-mark text-3xl text-primary mt-1">結果発表</h1>
+          </div>
+          <div class="overflow-x-auto rounded-xl border border-base-300 bg-base-100">
+            <table class="table table-sm">
+              <thead><tr><th>順位</th><th>名前</th><th>仕事力</th></tr></thead>
+              <tbody>
+                <tr class="bg-secondary/10"><td>1</td><td>たろう</td><td class="font-bold">18</td></tr>
+                <tr><td>2</td><td>はなこ</td><td>15</td></tr>
+                <tr><td>3</td><td>じろう</td><td>12</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p class="text-xs opacity-60 text-center">勝敗表示は簡略（プロトタイプ）</p>
+          <a href="#s-home" class="btn btn-outline w-full rounded-xl">TOPへ</a>
+        </div>
+      </section>
+
+      <!-- P-21 -->
+      <section class="screen" id="s-admin-login" data-title="P-21 Admin：ログイン">
+        <div class="navbar bg-base-100 border-b border-base-300 min-h-12 px-2">
+          <a href="#s-home" class="btn btn-outline btn-sm" style="border:1px solid #14212B;background:#fff;color:#14212B">戻る</a>
+          <span class="font-bold text-sm">admin ログイン</span>
+        </div>
+        <div class="body space-y-3">
+          <label class="form-control"><span class="label-text text-xs">ID</span><input class="input input-bordered" value="facilitator" readonly /></label>
+          <label class="form-control"><span class="label-text text-xs">パスワード</span><input class="input input-bordered" type="password" value="••••••••" readonly /></label>
+        </div>
+        <div class="p-3"><a href="#s-facil-create" class="btn btn-neutral w-full rounded-xl">ログイン</a></div>
+      </section>
+
+      <!-- P-22 -->
+      <section class="screen" id="s-facil-create" data-title="P-22 Admin：セッション作成">
+        <div class="navbar bg-base-100 border-b border-base-300 min-h-12 px-2">
+          <span class="font-bold text-sm px-2">セッション作成</span>
+        </div>
+        <div class="body space-y-3">
+          <label class="form-control">
+            <span class="label-text text-xs">終了ターン数</span>
+            <input class="input input-bordered" type="number" value="5" readonly />
+          </label>
+          <p class="text-xs opacity-60">一覧・停止・削除UIはプロトタイプ対象外です。</p>
+        </div>
+        <div class="p-3"><a href="#s-facil-code" class="btn btn-primary w-full rounded-xl">作成してコード発行</a></div>
+      </section>
+
+      <!-- P-23 -->
+      <section class="screen" id="s-facil-code" data-title="P-23 Admin：参加コード発行">
+        <div class="navbar bg-base-100 border-b border-base-300 min-h-12 px-2">
+          <span class="font-bold text-sm px-2">参加コード</span>
+        </div>
+        <div class="body space-y-4 text-center">
+          <p class="text-xs opacity-60">参加者に共有してください</p>
+          <div class="brand-mark text-4xl tracking-[0.3em] text-primary">A7K2M9</div>
+          <div class="card bg-base-100 border text-left">
+            <div class="card-body p-4 gap-1 text-sm">
+              <div class="text-xs opacity-60 mb-1">参加者（同期中）</div>
+              <div>たろう · はなこ · じろう</div>
+            </div>
+          </div>
+        </div>
+        <div class="p-3"><a href="#s-order" class="btn btn-primary w-full rounded-xl">手番順を決める</a></div>
+      </section>
+
+      <!-- P-24 -->
+      <section class="screen" id="s-order" data-title="P-24 Admin：手番順の決定">
+        <div class="navbar bg-base-100 border-b border-base-300 min-h-12 px-2">
+          <span class="font-bold text-sm px-2">手番順</span>
+        </div>
+        <div class="body space-y-3">
+          <div class="join w-full">
+            <button type="button" class="btn join-item flex-1 btn-primary">右回り</button>
+            <button type="button" class="btn join-item flex-1 btn-outline">左回り</button>
+          </div>
+          <ol class="list-decimal list-inside bg-base-100 border rounded-xl p-4 text-sm space-y-2">
+            <li>たろう</li><li>はなこ</li><li>じろう</li>
+          </ol>
+          <p class="text-xs opacity-60">給与は一斉のため手番順の対象外です。</p>
+        </div>
+        <div class="p-3"><a href="#s-ready" class="btn btn-primary w-full rounded-xl">この順番で開始</a></div>
+      </section>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      const select = document.getElementById("screenSelect");
+      const prevBtn = document.getElementById("prevBtn");
+      const nextBtn = document.getElementById("nextBtn");
+      let returnTo = "s-turn-salary";
+      let lastPlay = "s-turn-salary";
+      let readyTimer = null;
+      let readyLeft = 10;
+
+      const demoLinks = {
+        "s-join": [{ href: "#s-join-error", label: "参加エラー例へ" }],
+        "s-join-wait": [{ href: "#s-ready", label: "開始後の準備へ（デモ）" }],
+        "s-turn-salary": [
+          { href: "#s-turn-salary", label: "状態：確認前に戻す", salary: "confirm" },
+          { href: "#s-turn-salary", label: "状態：確認待ちを見る", salary: "wait" },
+          { href: "#s-retire-dice", label: "全員確認完了 → 退職へ" },
+        ],
+        "s-retire-result": [{ href: "#s-retire-prevented", label: "別例：残留" }],
+        "s-hire-select": [
+          { href: "#s-hire-detail", label: "読取後の候補詳細へ" },
+        ],
+        "s-hire-detail": [
+          { href: "#s-hire-result-ok", label: "合格通知 → 採用できた例" },
+          { href: "#s-hire-result-ng", label: "合格通知 → 採用できない例" },
+        ],
+        "s-solution-draw": [
+          { href: "#s-solution-detail", label: "読取後の詳細へ" },
+        ],
+        "s-solution-detail": [
+          { href: "#s-solution-detail", label: "状態：決定前に戻す", solution: "detail" },
+          { href: "#s-solution-detail", label: "状態：効果反映を見る", solution: "applied" },
+        ],
+        "s-done-skip": [
+          { href: "#s-turn-salary", label: "次ターン給与へ" },
+          { href: "#s-end", label: "最終結果へ" },
+        ],
+        "s-order": [{ href: "#s-ready", label: "参加者の準備画面を見る" }],
+        "s-home": [{ href: "#s-admin-login", label: "adminログインへ" }],
+      };
+
+      function fillGameBars() {
+        document.querySelectorAll(".game-bar").forEach((bar) => {
+          const mine = bar.dataset.mine === "1";
+          const whose = bar.dataset.whose || "";
+          bar.innerHTML = `
+            <div class="flex justify-between items-start gap-2">
+              <div>
+                <div class="font-bold text-sm">あなた（たろう）</div>
+                <div class="text-xs ${mine ? "text-primary font-semibold" : "opacity-60"}">${whose}</div>
+              </div>
+              <span class="badge badge-outline badge-sm">順位 ${bar.dataset.rank || "—"}</span>
+            </div>
+            <div class="grid grid-cols-3 gap-2 mt-2 text-center">
+              <div class="bg-base-200 rounded-lg py-1"><div class="text-[10px] opacity-60">仕事力</div><div class="font-bold">${bar.dataset.score}</div></div>
+              <div class="bg-base-200 rounded-lg py-1"><div class="text-[10px] opacity-60">従業員</div><div class="font-bold">${bar.dataset.emp}</div></div>
+              <div class="bg-base-200 rounded-lg py-1"><div class="text-[10px] opacity-60">コイン</div><div class="font-bold">${bar.dataset.coin}</div></div>
+            </div>
+            <div class="grid grid-cols-2 gap-2 mt-2">
+              <a class="btn btn-sm btn-outline rounded-lg" href="#s-list-solutions">ソリューション一覧</a>
+              <a class="btn btn-sm btn-outline rounded-lg" href="#s-list-employees">従業員一覧</a>
+            </div>`;
+        });
+      }
+      fillGameBars();
+
+      function setSalaryState(state) {
+        const screen = document.getElementById("s-turn-salary");
+        if (!screen) return;
+        screen.dataset.salaryState = state;
+        screen.querySelectorAll("[data-salary-view]").forEach((el) => {
+          el.hidden = el.dataset.salaryView !== state;
+        });
+        const bar = screen.querySelector(".game-bar");
+        if (bar) {
+          bar.dataset.whose = state === "wait" ? "他者の確認待ち" : "一斉確認";
+          bar.dataset.coin = state === "wait" ? "8" : "0";
+          bar.dataset.mine = state === "wait" ? "0" : "1";
+          fillGameBars();
+        }
+      }
+
+      function setSolutionState(state) {
+        const screen = document.getElementById("s-solution-detail");
+        if (!screen) return;
+        screen.dataset.solutionState = state;
+        screen.querySelectorAll("[data-solution-view]").forEach((el) => {
+          el.hidden = el.dataset.solutionView !== state;
+        });
+        const bar = screen.querySelector(".game-bar");
+        if (bar) {
+          bar.dataset.coin = state === "applied" ? "7" : "8";
+          bar.dataset.score = state === "applied" ? "6" : "4";
+          fillGameBars();
+        }
+        screen.classList.remove("sol-effect-anim");
+        if (state === "applied") {
+          void screen.offsetWidth;
+          screen.classList.add("sol-effect-anim");
+        }
+      }
+
+      function renderDemoLinks(screenId) {
+        const box = document.getElementById("mockDemoLinks");
+        box.innerHTML = "";
+        (demoLinks[screenId] || []).forEach((item) => {
+          const a = document.createElement("a");
+          a.href = item.href;
+          a.className = "btn btn-xs btn-outline justify-start";
+          a.textContent = item.label;
+          if (item.salary) {
+            a.addEventListener("click", (e) => {
+              e.preventDefault();
+              show("s-turn-salary", false, { salaryState: item.salary });
+            });
+          }
+          if (item.solution) {
+            a.addEventListener("click", (e) => {
+              e.preventDefault();
+              show("s-solution-detail", false, { solutionState: item.solution });
+            });
+          }
+          box.appendChild(a);
+        });
+        if (!box.children.length) {
+          const span = document.createElement("span");
+          span.className = "text-[11px] opacity-50";
+          span.textContent = "（この画面にデモ用遷移はありません）";
+          box.appendChild(span);
+        }
+      }
+
+      function rebuildSelect() {
+        select.innerHTML = "";
+        document.querySelectorAll(".screen").forEach((s) => {
+          const opt = document.createElement("option");
+          opt.value = s.id;
+          opt.textContent = s.dataset.title || s.id;
+          select.appendChild(opt);
+        });
+      }
+      rebuildSelect();
+
+      function syncListBackLinks() {
+        ["back-from-sol", "foot-back-sol", "back-from-emp", "foot-back-emp"].forEach((id) => {
+          const el = document.getElementById(id);
+          if (el) el.setAttribute("href", "#" + returnTo);
+        });
+      }
+
+      function clearReadyTimer() {
+        if (readyTimer) { clearInterval(readyTimer); readyTimer = null; }
+      }
+      function startReadyCountdown() {
+        clearReadyTimer();
+        readyLeft = 10;
+        const el = document.getElementById("readyCountdown");
+        if (el) el.textContent = String(readyLeft);
+        readyTimer = setInterval(() => {
+          readyLeft -= 1;
+          const node = document.getElementById("readyCountdown");
+          if (node) node.textContent = String(Math.max(readyLeft, 0));
+          if (readyLeft <= 0) {
+            clearReadyTimer();
+            show("s-turn-salary", true, { salaryState: "confirm" });
+          }
+        }, 1000);
+      }
+
+      function show(id, push, opts) {
+        opts = opts || {};
+        if (id === "s-turn-salary-wait") {
+          id = "s-turn-salary";
+          opts.salaryState = "wait";
+        }
+        // Old P-12 hash → P-11 applied state
+        if (id === "s-solution-result") {
+          id = "s-solution-detail";
+          opts.solutionState = "applied";
+        }
+        const all = Array.from(document.querySelectorAll(".screen"));
+        let target = document.getElementById(id);
+        // Non-screen ids (or stale hashes after merges) must not hide every screen
+        if (!target || !target.classList.contains("screen")) {
+          if (id !== "s-home") return show("s-home", push, opts);
+          target = all[0];
+          if (!target) return;
+          id = target.id;
+        }
+        const current = all.find((s) => s.classList.contains("active"));
+        if (current && current.dataset.play === "1" &&
+            id !== "s-list-solutions" && id !== "s-list-employees" &&
+            current.id !== "s-list-solutions" && current.id !== "s-list-employees") {
+          lastPlay = current.id;
+        }
+        if ((id === "s-list-solutions" || id === "s-list-employees") && current) {
+          returnTo = (current.id !== "s-list-solutions" && current.id !== "s-list-employees")
+            ? current.id : lastPlay;
+          syncListBackLinks();
+        }
+        const resultAnimIds = ["s-hire-result-ok", "s-hire-result-ng", "s-retire-result", "s-retire-prevented"];
+        all.forEach((s) => {
+          s.classList.toggle("active", s === target);
+          if (resultAnimIds.indexOf(s.id) !== -1) {
+            s.classList.remove("result-anim");
+            s.classList.remove("hire-anim");
+          }
+        });
+        select.value = id;
+        renderDemoLinks(id);
+        if (resultAnimIds.indexOf(id) !== -1) {
+          void target.offsetWidth;
+          target.classList.add("result-anim");
+        }
+        if (id === "s-ready") startReadyCountdown();
+        else clearReadyTimer();
+        if (id === "s-turn-salary") {
+          if (opts.salaryState) setSalaryState(opts.salaryState);
+          else if (!current || current.id !== "s-turn-salary") setSalaryState("confirm");
+        }
+        if (id === "s-solution-detail") {
+          if (opts.solutionState) setSolutionState(opts.solutionState);
+          else if (!current || current.id !== "s-solution-detail") setSolutionState("detail");
+        }
+        if (push !== false) history.replaceState(null, "", "#" + id);
+        target.querySelector(".body")?.scrollTo(0, 0);
+      }
+
+      select.addEventListener("change", () => show(select.value));
+      prevBtn.addEventListener("click", () => {
+        const all = Array.from(document.querySelectorAll(".screen"));
+        const i = all.findIndex((s) => s.classList.contains("active"));
+        if (i > 0) show(all[i - 1].id);
+      });
+      nextBtn.addEventListener("click", () => {
+        const all = Array.from(document.querySelectorAll(".screen"));
+        const i = all.findIndex((s) => s.classList.contains("active"));
+        if (i < all.length - 1) show(all[i + 1].id);
+      });
+
+      document.addEventListener("click", (e) => {
+        const a = e.target.closest("a[href^='#']");
+        if (!a) return;
+        const id = a.getAttribute("href").slice(1);
+        if (
+          id === "s-turn-salary-wait" ||
+          id === "s-solution-result" ||
+          document.getElementById(id)?.classList.contains("screen")
+        ) {
+          e.preventDefault();
+          show(id);
+        }
+      });
+
+      document.getElementById("diceFaces")?.addEventListener("click", (e) => {
+        const btn = e.target.closest(".die-face");
+        if (!btn) return;
+        document.querySelectorAll("#diceFaces .die-face").forEach((b) => b.classList.remove("on"));
+        btn.classList.add("on");
+      });
+
+      document.getElementById("salaryConfirmBtn")?.addEventListener("click", () => {
+        setSalaryState("wait");
+        renderDemoLinks("s-turn-salary");
+      });
+
+      document.getElementById("solutionDecideBtn")?.addEventListener("click", () => {
+        setSolutionState("applied");
+        renderDemoLinks("s-solution-detail");
+      });
+
+      const hash = location.hash.slice(1);
+      if (hash === "s-turn-salary-wait") show("s-turn-salary", false, { salaryState: "wait" });
+      else if (hash === "s-solution-result") show("s-solution-detail", false, { solutionState: "applied" });
+      else if (hash && document.getElementById(hash)?.classList.contains("screen")) show(hash, false);
+      else show("s-home", false);
+      // Guarantee at least one screen is visible on first paint
+      if (!document.querySelector(".screen.active")) {
+        const home = document.getElementById("s-home");
+        if (home) home.classList.add("active");
+      }
+    })();
+  </script>
+</body>
+</html>

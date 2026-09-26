@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>DEIDEI-CardGame ワイヤーフレーム草案</title>
+  <title>DEIDEI プロトタイプ ワイヤーフレーム</title>
   <style>
     :root {
       --line: #222;
@@ -37,8 +37,21 @@
       color: var(--muted);
     }
     .meta strong { color: var(--line); }
-    .nav-bar {
+    .wf-tools {
       width: min(390px, 100%);
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .wf-nav-note {
+      font-size: 11px;
+      color: var(--muted);
+      border: 1px dashed #999;
+      padding: 6px 8px;
+      background: #eee;
+    }
+    .nav-bar {
+      width: 100%;
       display: flex;
       gap: 8px;
       flex-wrap: wrap;
@@ -58,6 +71,30 @@
       background: #fff;
       font-size: 12px;
       cursor: pointer;
+    }
+    .wf-demo {
+      border: 1px dashed #999;
+      background: #eee;
+      padding: 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .wf-demo .wf-demo-title { font-size: 11px; color: var(--muted); }
+    .wf-demo .wf-demo-links { display: flex; flex-direction: column; gap: 4px; }
+    .wf-demo .wf-demo-links:empty::after {
+      content: "（この画面にデモ用遷移はありません）";
+      font-size: 11px;
+      color: #999;
+    }
+    .wf-demo a {
+      border: 1px solid #888;
+      background: #fff;
+      padding: 6px 8px;
+      font-size: 12px;
+      text-decoration: none;
+      color: inherit;
+      text-align: left;
     }
     .phone {
       width: min(390px, 100%);
@@ -85,13 +122,9 @@
       display: flex;
       align-items: center;
       gap: 8px;
+      flex-shrink: 0;
     }
-    .hdr h1 {
-      margin: 0;
-      font-size: 15px;
-      font-weight: 700;
-      flex: 1;
-    }
+    .hdr h1 { margin: 0; font-size: 15px; font-weight: 700; flex: 1; }
     .hdr .back {
       border: 1px solid var(--line);
       background: #fff;
@@ -101,6 +134,36 @@
       text-decoration: none;
       color: inherit;
     }
+    .hdr.hdr-phase {
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .hdr-turn {
+      font-size: 11px;
+      font-weight: 700;
+      border: 1px solid var(--line);
+      padding: 2px 6px;
+      background: #fff;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .phase-crumb {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      font-size: 13px;
+      flex: 1;
+      line-height: 1.5;
+    }
+    .phase-crumb .pc { color: #999; font-weight: 400; }
+    .phase-crumb .pc.on {
+      color: var(--line);
+      font-weight: 700;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+    .phase-crumb .sep { color: #bbb; margin: 0 4px; }
     .body {
       padding: 12px;
       display: flex;
@@ -115,23 +178,16 @@
       gap: 8px;
       background: #fff;
       flex-shrink: 0;
-      /* 本文と同じ白背景。ステータスフッタ（グレー）と区別 */
     }
-    .body + .foot {
-      padding-top: 0;
-    }
+    .body + .foot { padding-top: 0; }
     .foot .grow { flex: 1; }
     .label { font-size: 12px; color: var(--muted); }
-    .box {
-      border: 1px solid var(--line);
-      padding: 10px;
-      background: #fff;
-    }
+    .box { border: 1px solid var(--line); padding: 10px; background: #fff; }
     .box.muted { background: var(--fill); }
     .row { display: flex; gap: 8px; align-items: center; }
     .row.between { justify-content: space-between; }
     .stack { display: flex; flex-direction: column; gap: 6px; }
-    .input, .select, textarea {
+    .input {
       width: 100%;
       border: 1px solid var(--line);
       padding: 8px 10px;
@@ -139,7 +195,6 @@
       background: #fff;
       font-family: inherit;
     }
-    textarea { min-height: 64px; resize: vertical; }
     .btn {
       display: inline-flex;
       align-items: center;
@@ -154,33 +209,27 @@
       text-align: center;
       font-family: inherit;
     }
-    .btn.primary { background: var(--fill-dark); font-weight: 700; }
+    .btn.primary { background: var(--fill-dark); font-weight: 700; border: 1px solid var(--line); }
     .btn.ghost { background: #fff; }
+    .btn.outline {
+      background: #fff !important;
+      border: 2px solid var(--line) !important;
+      color: var(--line) !important;
+      font-weight: 600;
+    }
     .btn.block { width: 100%; }
-    .btn:disabled { opacity: 0.45; cursor: not-allowed; }
-    .btn.sm { padding: 6px 8px; font-size: 12px; }
+    .btn.xl {
+      padding: 18px 16px;
+      font-size: 18px;
+      font-weight: 700;
+      min-height: 64px;
+    }
     .chip {
       display: inline-block;
       border: 1px solid var(--line);
       padding: 2px 8px;
       font-size: 11px;
       background: var(--fill);
-    }
-    .phase-bar {
-      display: flex;
-      gap: 4px;
-      flex-wrap: wrap;
-    }
-    .phase-bar span {
-      border: 1px solid var(--line);
-      padding: 3px 6px;
-      font-size: 11px;
-      color: var(--muted);
-    }
-    .phase-bar span.on {
-      background: var(--fill-dark);
-      color: var(--line);
-      font-weight: 700;
     }
     .placeholder {
       border: 2px dashed #888;
@@ -191,7 +240,12 @@
       font-size: 13px;
       font-weight: 700;
     }
-    .placeholder.tall { min-height: 140px; display: flex; align-items: center; justify-content: center; }
+    .placeholder.tall {
+      min-height: 140px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
     .list { border: 1px solid var(--line); }
     .list .item {
       padding: 10px;
@@ -202,93 +256,20 @@
       align-items: center;
     }
     .list .item:last-child { border-bottom: 0; }
-    .list .item.selected { background: var(--fill); }
-    .dice {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 8px;
-    }
-    .dice .btn { min-height: 44px; font-size: 18px; font-weight: 700; }
-    .dice .btn.on { background: var(--fill-dark); }
-    .dice-faces {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 8px;
-    }
-    .die-face {
-      aspect-ratio: 1;
-      border: 2px solid var(--line);
-      background: #fff;
-      padding: 10%;
-      cursor: pointer;
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      grid-template-rows: repeat(3, 1fr);
-      gap: 4%;
-    }
-    .die-face.on {
-      background: var(--fill-dark);
-      outline: 2px solid var(--line);
-      outline-offset: 1px;
-    }
-    .die-face .pip {
-      width: 70%;
-      height: 70%;
-      margin: auto;
-      border-radius: 50%;
-      background: transparent;
-    }
-    .die-face .pip.on {
-      background: var(--line);
-    }
-    /* 3x3 pip map: TL TM TR / ML MM MR / BL BM BR */
-    .die-face[data-n="1"] .pip:nth-child(5) { background: var(--line); }
-    .die-face[data-n="2"] .pip:nth-child(1),
-    .die-face[data-n="2"] .pip:nth-child(9) { background: var(--line); }
-    .die-face[data-n="3"] .pip:nth-child(1),
-    .die-face[data-n="3"] .pip:nth-child(5),
-    .die-face[data-n="3"] .pip:nth-child(9) { background: var(--line); }
-    .die-face[data-n="4"] .pip:nth-child(1),
-    .die-face[data-n="4"] .pip:nth-child(3),
-    .die-face[data-n="4"] .pip:nth-child(7),
-    .die-face[data-n="4"] .pip:nth-child(9) { background: var(--line); }
-    .die-face[data-n="5"] .pip:nth-child(1),
-    .die-face[data-n="5"] .pip:nth-child(3),
-    .die-face[data-n="5"] .pip:nth-child(5),
-    .die-face[data-n="5"] .pip:nth-child(7),
-    .die-face[data-n="5"] .pip:nth-child(9) { background: var(--line); }
-    .die-face[data-n="6"] .pip:nth-child(1),
-    .die-face[data-n="6"] .pip:nth-child(3),
-    .die-face[data-n="6"] .pip:nth-child(4),
-    .die-face[data-n="6"] .pip:nth-child(6),
-    .die-face[data-n="6"] .pip:nth-child(7),
-    .die-face[data-n="6"] .pip:nth-child(9) { background: var(--line); }
     .err {
       border: 1px solid var(--line);
       background: #eee;
       padding: 8px 10px;
       font-size: 13px;
     }
-    .note {
-      font-size: 11px;
-      color: var(--muted);
-    }
-    .title-lg {
-      font-size: 18px;
-      font-weight: 700;
-      margin: 4px 0;
-    }
-    .split-2 {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 8px;
-    }
-    .wf-id {
-      font-size: 10px;
-      color: var(--muted);
-      letter-spacing: 0.02em;
-    }
-    /* プレイ中ステータス（常時） */
+    .note { font-size: 11px; color: var(--muted); }
+    .title-lg { font-size: 18px; font-weight: 700; margin: 4px 0; }
+    .split-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .wf-id { font-size: 10px; color: var(--muted); letter-spacing: 0.02em; }
+    .screen .hdr { order: 1; }
+    .screen .body { order: 2; }
+    .screen .foot { order: 3; }
+    .screen .game-status { order: 4; }
     .game-status {
       border-top: 1px solid var(--line);
       background: var(--bg);
@@ -298,64 +279,87 @@
       gap: 6px;
       flex-shrink: 0;
     }
-    .screen .hdr { order: 1; }
-    .screen .body { order: 2; }
-    .screen .foot { order: 3; }
-    .screen .game-status { order: 4; }
-    .game-status .gs-top {
+    .gs-top {
       display: flex;
       justify-content: space-between;
       gap: 8px;
       align-items: flex-start;
       flex-wrap: wrap;
     }
-    .game-status .gs-turn {
+    .gs-player { font-size: 13px; font-weight: 700; }
+    .gs-whose { font-size: 12px; }
+    .gs-whose.mine { font-weight: 700; }
+    .gs-whose.other { color: var(--muted); }
+    .gs-rank {
       font-size: 12px;
       font-weight: 700;
+      border: 1px solid var(--line);
+      padding: 2px 8px;
+      background: #fff;
     }
-    .game-status .gs-whose {
-      font-size: 12px;
-    }
-    .game-status .gs-whose.mine { font-weight: 700; }
-    .game-status .gs-whose.other { color: var(--muted); }
-    .game-status .gs-stats {
+    .gs-stats {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       gap: 4px;
       font-size: 11px;
     }
-    .game-status .gs-stat {
+    .gs-stat {
       border: 1px solid var(--line);
       padding: 4px 6px;
       background: #fff;
       text-align: center;
     }
-    .game-status .gs-stat .gs-k {
+    .gs-stat .gs-k { display: block; color: var(--muted); font-size: 10px; }
+    .gs-stat .gs-v { font-weight: 700; font-size: 13px; }
+    .gs-links { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+
+    .cand-illus {
+      width: 64px;
+      height: 64px;
+      flex-shrink: 0;
       display: block;
-      color: var(--muted);
+    }
+    .emp-with-illus {
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+    }
+    .emp-with-illus .emp-illus-wrap {
+      text-align: center;
+    }
+    .emp-with-illus .risk-label {
       font-size: 10px;
+      color: var(--muted);
+      margin-top: 4px;
     }
-    .game-status .gs-stat .gs-v {
-      font-weight: 700;
-      font-size: 13px;
-    }
-    .game-status .gs-links {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 6px;
-    }
-    .game-status .gs-links a {
+    .gs-links a.btn-link,
+    .gs-links .btn-link {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
       border: 1px solid var(--line);
       background: #fff;
-      padding: 6px 8px;
-      font-size: 11px;
+      padding: 8px 8px;
+      font-size: 12px;
+      font-weight: 700;
       text-align: center;
       text-decoration: none;
       color: inherit;
+      cursor: pointer;
+      font-family: inherit;
+      width: 100%;
     }
-
-    /* 参加者向け TOP */
-    .top-screen {
+    .resume-block {
+      border: 1px solid var(--line);
+      padding: 10px;
+      background: #fff;
+    }
+    .resume-block .resume-title {
+      font-size: 12px;
+      color: var(--muted);
+      margin-bottom: 4px;
+    }
+        .top-screen {
       position: relative;
       flex: 1;
       display: flex;
@@ -392,535 +396,12 @@
       max-width: 280px;
       background: var(--fill);
     }
-    .logo-box .logo-mark {
-      font-size: 11px;
-      color: var(--muted);
-      margin-bottom: 6px;
-    }
+    .logo-box .logo-mark { font-size: 11px; color: var(--muted); margin-bottom: 6px; }
     .logo-box .logo-name {
       font-size: 22px;
       font-weight: 700;
       letter-spacing: 0.04em;
     }
-    .btn.xl {
-      padding: 18px 16px;
-      font-size: 18px;
-      font-weight: 700;
-      min-height: 64px;
-    }
-
-    .check-grid {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-      border: 1px solid var(--line);
-      padding: 8px 10px;
-      background: #fff;
-    }
-    .check-grid label {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 13px;
-    }
-    .stepper {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    .stepper .btn {
-      width: 44px;
-      height: 44px;
-      padding: 0;
-      font-size: 20px;
-      font-weight: 700;
-    }
-    .stepper .step-val {
-      border: 1px solid var(--line);
-      min-width: 56px;
-      text-align: center;
-      padding: 10px 8px;
-      font-size: 18px;
-      font-weight: 700;
-      background: #fff;
-    }
-
-    .hdr.hdr-phase {
-      flex-wrap: wrap;
-      flex-shrink: 0;
-      justify-content: space-between;
-      align-items: center;
-      gap: 8px;
-    }
-    .hdr-turn {
-      font-size: 11px;
-      font-weight: 700;
-      border: 1px solid var(--line);
-      padding: 2px 6px;
-      background: #fff;
-      white-space: nowrap;
-      flex-shrink: 0;
-    }
-    .gs-player {
-      font-size: 13px;
-      font-weight: 700;
-    }
-    .gs-rank {
-      font-size: 12px;
-      font-weight: 700;
-      border: 1px solid var(--line);
-      padding: 2px 8px;
-      background: #fff;
-    }
-    .phase-crumb {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      gap: 2px 0;
-      font-size: 13px;
-      flex: 1;
-      line-height: 1.5;
-    }
-    .phase-crumb .pc {
-      color: #999;
-      font-weight: 400;
-    }
-    .phase-crumb .pc.on {
-      color: var(--line);
-      font-weight: 700;
-      text-decoration: underline;
-      text-underline-offset: 3px;
-    }
-    .phase-crumb .sep {
-      color: #bbb;
-      margin: 0 4px;
-      font-weight: 400;
-    }
-
-    .ico-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 4px;
-      margin-top: 4px;
-    }
-    .ico {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      border: 1px solid var(--line);
-      min-width: 28px;
-      height: auto;
-      min-height: 22px;
-      padding: 2px 6px;
-      font-size: 11px;
-      font-weight: 700;
-      background: #fff;
-      line-height: 1.2;
-      white-space: nowrap;
-    }
-    .ico.fx {
-      background: var(--fill);
-      border-style: dashed;
-    }
-    .ai-box {
-      border: 2px dashed #888;
-      background: var(--ph);
-      padding: 10px;
-    }
-    .ai-box .ai-label {
-      font-size: 11px;
-      font-weight: 700;
-      margin-bottom: 4px;
-    }
-    .org-tree {
-      border: 1px solid var(--line);
-    }
-    .org-node {
-      padding: 8px 10px;
-      border-bottom: 1px solid var(--line);
-    }
-    .org-node:last-child { border-bottom: 0; }
-    .org-node .org-head {
-      display: flex;
-      justify-content: space-between;
-      gap: 8px;
-      align-items: flex-start;
-    }
-    .org-node .org-name {
-      font-weight: 700;
-      font-size: 13px;
-    }
-    .org-node .org-role {
-      font-size: 11px;
-      color: var(--muted);
-    }
-    .org-node .wp {
-      font-size: 11px;
-      text-align: right;
-      white-space: nowrap;
-    }
-    .org-node .wp strong { font-size: 13px; }
-    .org-children {
-      margin-left: 14px;
-      border-left: 2px solid #999;
-      padding-left: 0;
-    }
-    .org-children .org-node {
-      position: relative;
-      padding-left: 12px;
-    }
-    .org-children .org-node::before {
-      content: "";
-      position: absolute;
-      left: 0;
-      top: 18px;
-      width: 10px;
-      border-top: 2px solid #999;
-    }
-    .org-slot {
-      margin-left: 14px;
-      border-left: 2px dashed #bbb;
-      padding: 8px 10px 8px 12px;
-      color: var(--muted);
-      font-size: 12px;
-    }
-    .cap-note {
-      border: 1px solid var(--line);
-      padding: 8px 10px;
-      background: var(--fill);
-      font-size: 12px;
-    }
-
-    .wf-tools {
-      width: min(390px, 100%);
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-    }
-    .wf-nav-note {
-      font-size: 11px;
-      color: var(--muted);
-      border: 1px dashed #999;
-      padding: 6px 8px;
-      background: #eee;
-    }
-    .nav-bar {
-      width: 100%;
-    }
-
-    .wf-demo {
-      border: 1px dashed #999;
-      background: #eee;
-      padding: 8px;
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-    }
-    .wf-demo .wf-demo-title {
-      font-size: 11px;
-      color: var(--muted);
-    }
-    .wf-demo .wf-demo-links {
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-    }
-    .wf-demo .wf-demo-links:empty::after {
-      content: "（この画面にデモ用遷移はありません）";
-      font-size: 11px;
-      color: #999;
-    }
-    .wf-demo a {
-      border: 1px solid #888;
-      background: #fff;
-      padding: 6px 8px;
-      font-size: 12px;
-      text-decoration: none;
-      color: inherit;
-      text-align: left;
-    }
-
-    .end-hero {
-      border: 2px solid var(--line);
-      padding: 16px 12px;
-      text-align: center;
-      background: var(--fill);
-    }
-    .end-hero .face {
-      font-size: 36px;
-      line-height: 1.2;
-      margin-bottom: 4px;
-    }
-    .end-hero .rank {
-      font-size: 13px;
-      font-weight: 700;
-      letter-spacing: 0.08em;
-    }
-    .end-hero .name {
-      font-size: 28px;
-      font-weight: 700;
-      margin: 4px 0 12px;
-    }
-    .end-hero .big-stats {
-      display: grid;
-      grid-template-columns: 1fr 1fr 1fr;
-      gap: 6px;
-    }
-    .end-hero .big-stat {
-      border: 1px solid var(--line);
-      background: #fff;
-      padding: 10px 6px;
-    }
-    .end-hero .big-stat .k {
-      display: block;
-      font-size: 11px;
-      color: var(--muted);
-    }
-    .end-hero .big-stat .v {
-      font-size: 22px;
-      font-weight: 700;
-      line-height: 1.2;
-    }
-    .rank-list .item {
-      align-items: center;
-    }
-    .rank-list .face {
-      font-size: 18px;
-      min-width: 2.2em;
-      text-align: center;
-    }
-    .rank-list .who {
-      flex: 1;
-    }
-    .rank-list .who .nm {
-      font-weight: 700;
-    }
-    .rank-list .who .sub {
-      font-size: 11px;
-      color: var(--muted);
-    }
-    .rank-list .nums {
-      text-align: right;
-      font-size: 12px;
-      line-height: 1.35;
-    }
-    .rank-list .nums strong {
-      font-size: 14px;
-    }
-    .rank-list .item.bust {
-      background: #eee;
-    }
-
-    .pay-hero {
-      border: 2px solid var(--line);
-      padding: 20px 12px 16px;
-      text-align: center;
-      background: var(--fill);
-      overflow: hidden;
-      position: relative;
-      width: 100%;
-      box-sizing: border-box;
-    }
-    .pay-hero .pay-label {
-      font-size: 12px;
-      color: var(--muted);
-      animation: fade-up 0.5s ease-out both;
-    }
-    .pay-hero .pay-amount {
-      font-size: clamp(36px, 12vw, 52px);
-      font-weight: 900;
-      line-height: 1.1;
-      margin: 4px 0;
-      max-width: 100%;
-      animation: pay-bounce 0.85s ease-out both;
-    }
-    .pay-hero .pay-unit {
-      font-size: 14px;
-      font-weight: 700;
-      animation: fade-up 0.55s 0.15s ease-out both;
-    }
-    .pay-hero .pay-detail {
-      font-size: 12px;
-      color: var(--muted);
-      margin-top: 4px;
-      animation: fade-up 0.55s 0.25s ease-out both;
-    }
-    @keyframes pay-bounce {
-      0% { transform: scale(0.2); opacity: 0; }
-      55% { transform: scale(1.18); opacity: 1; }
-      75% { transform: scale(0.96); }
-      100% { transform: scale(1); }
-    }
-    .pay-balance {
-      border: 1px solid var(--line);
-      padding: 10px 12px;
-      display: flex;
-      justify-content: space-between;
-      align-items: baseline;
-    }
-    .pay-balance .v {
-      font-size: 20px;
-      font-weight: 700;
-    }
-    .pay-wait {
-      border: 1px solid var(--line);
-      padding: 8px 10px;
-      background: #fff;
-      font-size: 13px;
-    }
-
-    .fx-stage {
-      border: 2px solid var(--line);
-      min-height: 140px;
-      max-height: 200px;
-      width: 100%;
-      box-sizing: border-box;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding: 16px 12px;
-      text-align: center;
-      overflow: hidden;
-      position: relative;
-      flex-shrink: 0;
-    }
-    .fx-stage.bust {
-      background: #ddd;
-    }
-    .fx-stage.safe {
-      background: #f3f3f3;
-    }
-    .fx-retire {
-      font-size: clamp(28px, 10vw, 40px);
-      font-weight: 900;
-      letter-spacing: 0.06em;
-      max-width: 100%;
-      animation: retire-pop 0.7s ease-out both, retire-shake 0.45s 0.55s ease-in-out both;
-    }
-    .fx-safe {
-      font-size: clamp(26px, 9vw, 36px);
-      font-weight: 800;
-      letter-spacing: 0.04em;
-      max-width: 100%;
-      animation: safe-fade 0.9s ease-out both;
-    }
-    .fx-sub {
-      margin-top: 8px;
-      font-size: 13px;
-      color: var(--muted);
-      animation: fade-up 0.6s 0.35s ease-out both;
-    }
-    .fx-cause {
-      border: 1px solid var(--line);
-      padding: 10px 12px;
-      background: #fff;
-      font-size: 13px;
-    }
-    .fx-cause .label { margin-bottom: 4px; }
-    @keyframes retire-pop {
-      0% { transform: scale(0.2); opacity: 0; }
-      60% { transform: scale(1.15); opacity: 1; }
-      100% { transform: scale(1); }
-    }
-    @keyframes retire-shake {
-      0%, 100% { transform: translateX(0); }
-      25% { transform: translateX(-3px); }
-      50% { transform: translateX(3px); }
-      75% { transform: translateX(-2px); }
-    }
-    @keyframes safe-fade {
-      0% { transform: translateY(12px); opacity: 0; }
-      100% { transform: translateY(0); opacity: 1; }
-    }
-    @keyframes fade-up {
-      0% { transform: translateY(8px); opacity: 0; }
-      100% { transform: translateY(0); opacity: 1; }
-    }
-
-    .fx-power {
-      font-size: clamp(32px, 11vw, 44px);
-      font-weight: 900;
-      letter-spacing: 0.04em;
-      max-width: 100%;
-      animation: power-bounce 0.85s ease-out both;
-    }
-    .fx-power .plus {
-      display: inline-block;
-      animation: power-pulse 0.9s 0.2s ease-in-out both;
-    }
-    .card-brief {
-      border: 1px solid var(--line);
-      padding: 10px;
-      background: #fff;
-    }
-    .card-brief .card-name {
-      font-size: 16px;
-      font-weight: 700;
-      margin-bottom: 6px;
-    }
-    .emp-card {
-      border: 1px solid var(--line);
-      padding: 10px 12px;
-      background: #fff;
-    }
-    .emp-card .emp-head {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      gap: 8px;
-    }
-    .emp-card .emp-label {
-      font-size: 11px;
-      color: var(--muted);
-      margin-bottom: 2px;
-    }
-    .emp-card .emp-name {
-      font-size: 16px;
-      font-weight: 700;
-    }
-    .emp-card .wp {
-      font-size: 11px;
-      text-align: right;
-      white-space: nowrap;
-    }
-    .emp-card .wp strong { font-size: 13px; }
-    .emp-card .ico-row { margin-top: 6px; }
-    .emp-card .emp-farewell {
-      margin-top: 8px;
-      font-size: 12px;
-      color: var(--muted);
-      line-height: 1.4;
-    }
-    .fx-impact {
-      border: 1px solid var(--line);
-      padding: 8px 10px;
-      background: #fff;
-      font-size: 12px;
-    }
-    @keyframes power-bounce {
-      0% { transform: scale(0.3); opacity: 0; }
-      55% { transform: scale(1.2); opacity: 1; }
-      75% { transform: scale(0.95); }
-      100% { transform: scale(1); }
-    }
-    @keyframes power-pulse {
-      0%, 100% { transform: scale(1); }
-      50% { transform: scale(1.12); }
-    }
-
-    .hire-stop {
-      border: 2px solid var(--line);
-      background: #ddd;
-      padding: 16px 12px;
-      text-align: center;
-    }
-    .hire-stop .big {
-      font-size: 22px;
-      font-weight: 900;
-      margin: 6px 0;
-    }
-
     .code-cells {
       display: grid;
       grid-template-columns: repeat(6, 1fr);
@@ -936,12 +417,7 @@
       justify-content: center;
       font-size: 22px;
       font-weight: 800;
-      letter-spacing: 0;
     }
-    .code-cells .cell.empty {
-      color: #bbb;
-    }
-
     .ready-count {
       border: 2px solid var(--line);
       padding: 16px 12px;
@@ -953,11 +429,383 @@
       font-weight: 900;
       line-height: 1.1;
     }
+    .pay-hero {
+      border: 2px solid var(--line);
+      padding: 20px 12px 16px;
+      text-align: center;
+      background: var(--fill);
+    }
+    .pay-hero .pay-label { font-size: 12px; color: var(--muted); }
+    .pay-hero .pay-amount {
+      font-size: clamp(36px, 12vw, 52px);
+      font-weight: 900;
+      line-height: 1.1;
+      margin: 4px 0;
+    }
+    .pay-hero .pay-unit { font-size: 14px; font-weight: 700; }
+    .pay-hero .pay-detail { font-size: 12px; color: var(--muted); margin-top: 4px; }
+    .pay-balance {
+      border: 1px solid var(--line);
+      padding: 10px 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+    }
+    .pay-balance .v { font-size: 20px; font-weight: 700; }
+    .pay-wait {
+      border: 1px solid var(--line);
+      padding: 8px 10px;
+      background: #fff;
+      font-size: 13px;
+    }
+    .dice-faces {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+    }
+    .die-face {
+      aspect-ratio: 1;
+      border: 2px solid var(--line);
+      background: #fff;
+      padding: 10%;
+      cursor: pointer;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      grid-template-rows: repeat(3, 1fr);
+      gap: 4%;
+    }
+    .die-face.on {
+      background: var(--fill-dark);
+      outline: 2px solid var(--line);
+      outline-offset: 1px;
+    }
+    .die-face .pip {
+      width: 70%;
+      height: 70%;
+      margin: auto;
+      border-radius: 50%;
+      background: transparent;
+    }
+    .die-face[data-n="1"] .pip:nth-child(5) { background: var(--line); }
+    .die-face[data-n="2"] .pip:nth-child(1),
+    .die-face[data-n="2"] .pip:nth-child(9) { background: var(--line); }
+    .die-face[data-n="3"] .pip:nth-child(1),
+    .die-face[data-n="3"] .pip:nth-child(5),
+    .die-face[data-n="3"] .pip:nth-child(9) { background: var(--line); }
+    .die-face[data-n="4"] .pip:nth-child(1),
+    .die-face[data-n="4"] .pip:nth-child(3),
+    .die-face[data-n="4"] .pip:nth-child(7),
+    .die-face[data-n="4"] .pip:nth-child(9) { background: var(--line); }
+    .die-face[data-n="5"] .pip:nth-child(1),
+    .die-face[data-n="5"] .pip:nth-child(3),
+    .die-face[data-n="5"] .pip:nth-child(5),
+    .die-face[data-n="5"] .pip:nth-child(7),
+    .die-face[data-n="5"] .pip:nth-child(9) { background: var(--line); }
+    .die-face[data-n="6"] .pip:nth-child(1),
+    .die-face[data-n="6"] .pip:nth-child(3),
+    .die-face[data-n="6"] .pip:nth-child(4),
+    .die-face[data-n="6"] .pip:nth-child(6),
+    .die-face[data-n="6"] .pip:nth-child(7),
+    .die-face[data-n="6"] .pip:nth-child(9) { background: var(--line); }
+    .emp-card {
+      border: 1px solid var(--line);
+      padding: 10px 12px;
+      background: #fff;
+    }
+    .emp-card .emp-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 8px;
+    }
+    .emp-card .emp-label { font-size: 11px; color: var(--muted); margin-bottom: 2px; }
+    .emp-card .emp-name { font-size: 16px; font-weight: 700; }
+    .emp-card .wp { font-size: 11px; text-align: right; white-space: nowrap; }
+    .emp-card .wp strong { font-size: 13px; }
+    .ico-row { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 6px; }
+    .ico {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid var(--line);
+      min-width: 28px;
+      padding: 2px 6px;
+      font-size: 11px;
+      font-weight: 700;
+      background: #fff;
+      white-space: nowrap;
+    }
+    .ico.fx { background: var(--fill); border-style: dashed; }
+    .result-box {
+      border: 2px solid var(--line);
+      padding: 16px 12px;
+      text-align: center;
+      background: var(--fill);
+      position: relative;
+      overflow: hidden;
+    }
+    .result-box .big {
+      font-size: 28px;
+      font-weight: 900;
+      letter-spacing: 0.04em;
+    }
+    .result-box .sub { margin-top: 6px; font-size: 13px; color: var(--muted); }
+    .result-box.ng { background: #ddd; }
+    /* P-16 / P-17 — light result-motion hint (full drama lives in UI mock) */
+    #s-hire-result-ok.active .result-box .big {
+      animation: wfHireOkPop 0.55s cubic-bezier(0.22, 1.2, 0.36, 1) both;
+    }
+    #s-hire-result-ok.active .result-box {
+      background: #e8f2ec;
+      border-color: #2a6b4a;
+    }
+    #s-hire-result-ng.active .result-box .big {
+      animation: wfHireNgShake 0.6s ease-out both;
+    }
+    #s-hire-result-ng.active .result-box.ng {
+      background: #d0d0d0;
+      border-color: #666;
+    }
+    /* P-08 / P-09 — light resign-result hint (full drama in UI mock) */
+    #s-retire-result.active .result-box .big {
+      animation: wfResignNgShakeSink 0.7s ease-out both;
+    }
+    #s-retire-result.active .result-box.ng {
+      background: #cfcfcf;
+      border-color: #555;
+    }
+    #s-retire-result.active .cand-illus {
+      animation: wfResignIllusLeave 0.75s ease-in both;
+    }
+    #s-retire-prevented.active .result-box .big {
+      animation: wfResignOkPop 0.55s cubic-bezier(0.22, 1.2, 0.36, 1) both;
+    }
+    #s-retire-prevented.active .result-box {
+      background: #e8f2ec;
+      border-color: #2a6b4a;
+    }
+    #s-retire-prevented.active .cand-illus {
+      animation: wfResignIllusRelief 0.6s ease-out both;
+    }
+    @keyframes wfHireOkPop {
+      0% { transform: scale(0.7); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+    @keyframes wfHireNgShake {
+      0% { opacity: 0; transform: translateX(0); }
+      25% { opacity: 1; transform: translateX(-4px); }
+      50% { transform: translateX(4px); }
+      100% { transform: translateX(0); }
+    }
+    @keyframes wfResignNgShakeSink {
+      0% { transform: translateY(-2px); opacity: 0; }
+      20% { opacity: 1; }
+      40% { transform: translateX(-4px) translateY(2px); }
+      60% { transform: translateX(3px) translateY(4px); }
+      100% { transform: translateX(0) translateY(3px); }
+    }
+    @keyframes wfResignIllusLeave {
+      from { opacity: 1; filter: grayscale(0); transform: translateY(0); }
+      to { opacity: 0.55; filter: grayscale(0.65); transform: translateY(8px); }
+    }
+    @keyframes wfResignOkPop {
+      0% { transform: scale(0.75); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+    @keyframes wfResignIllusRelief {
+      0% { transform: scale(0.92); opacity: 0.6; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      #s-hire-result-ok.active .result-box .big,
+      #s-hire-result-ng.active .result-box .big,
+      #s-retire-result.active .result-box .big,
+      #s-retire-result.active .cand-illus,
+      #s-retire-prevented.active .result-box .big,
+      #s-retire-prevented.active .cand-illus { animation: none; }
+    }
+    .card-brief {
+      border: 1px solid var(--line);
+      padding: 10px;
+      background: #fff;
+    }
+    .card-brief .card-name {
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+
+    /* Physical card face (schematic) — shown as-is after QR scan */
+    .phys-card-wrap {
+      display: flex;
+      justify-content: center;
+      padding: 4px 0 2px;
+    }
+    .phys-card {
+      width: 100%;
+      max-width: 280px;
+      border: 3px solid var(--line);
+      background: #fff;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      aspect-ratio: 63 / 88;
+    }
+    .phys-card .pc-band {
+      border-bottom: 2px solid var(--line);
+      padding: 6px 8px;
+      background: var(--fill);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 6px;
+      flex-shrink: 0;
+    }
+    .phys-card .pc-kind {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      color: var(--muted);
+    }
+    .phys-card .pc-wp {
+      font-size: 12px;
+      font-weight: 800;
+      border: 1px solid var(--line);
+      background: #fff;
+      padding: 2px 6px;
+      white-space: nowrap;
+    }
+    .phys-card .pc-title {
+      font-size: 15px;
+      font-weight: 800;
+      padding: 8px 10px 4px;
+      line-height: 1.25;
+      flex-shrink: 0;
+    }
+    .phys-card .pc-art {
+      margin: 0 10px;
+      border: 2px solid var(--line);
+      background: var(--ph);
+      flex: 1;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      position: relative;
+      overflow: hidden;
+    }
+    .phys-card .pc-art svg {
+      width: 56%;
+      max-height: 70%;
+      display: block;
+    }
+    .phys-card .pc-art-label {
+      font-size: 10px;
+      color: #555;
+      font-weight: 700;
+    }
+    .phys-card .pc-body {
+      padding: 8px 10px 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      flex-shrink: 0;
+    }
+    .phys-card .pc-row-label {
+      font-size: 9px;
+      color: var(--muted);
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      margin-bottom: 2px;
+    }
+    .phys-card .pc-text {
+      font-size: 11px;
+      line-height: 1.35;
+      border: 1px dashed #888;
+      padding: 6px 8px;
+      background: #fafafa;
+    }
+    .phys-card.hire .pc-name {
+      font-size: 18px;
+      font-weight: 800;
+      padding: 6px 10px 2px;
+    }
+    .phys-card.hire .pc-art {
+      flex: 0 0 auto;
+      aspect-ratio: 1.35;
+      margin-top: 4px;
+    }
+    .num-row {
+      border: 1px solid var(--line);
+      padding: 10px 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      background: #fff;
+    }
+    .num-row .v { font-size: 22px; font-weight: 800; }
+    .end-hero {
+      border: 2px solid var(--line);
+      padding: 16px 12px;
+      text-align: center;
+      background: var(--fill);
+    }
+    .end-hero .rank { font-size: 13px; font-weight: 700; letter-spacing: 0.08em; }
+    .end-hero .name { font-size: 26px; font-weight: 700; margin: 4px 0 12px; }
+    .end-hero .big-stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 6px;
+    }
+    .end-hero .big-stat {
+      border: 1px solid var(--line);
+      background: #fff;
+      padding: 10px 6px;
+    }
+    .end-hero .big-stat .k { display: block; font-size: 11px; color: var(--muted); }
+    .end-hero .big-stat .v { font-size: 20px; font-weight: 700; }
+    .poll-dot {
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--line);
+      margin-right: 6px;
+      animation: pulse 1.2s ease-in-out infinite;
+    }
+
+    .salary-state[hidden],
+    .solution-state[hidden] { display: none !important; }
+    #s-solution-detail.active[data-solution-state="applied"] .sol-effect-wp .v {
+      animation: wfResignOkPop 0.55s cubic-bezier(0.22, 1.2, 0.36, 1) both;
+    }
+    #salaryConfirmBtn {
+      width: 100%;
+      border: 1px solid var(--line);
+      background: var(--line);
+      color: #fff;
+      padding: 12px;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: inherit;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 0.3; }
+      50% { opacity: 1; }
+    }
   </style>
 </head>
 <body>
   <div class="page">
-    <div class="meta"><strong>DEIDEI-CardGame</strong> ワイヤーフレーム</div>
+    <div class="meta">
+      <strong>DEIDEI-CardGame</strong> プロトタイプ ワイヤーフレーム
+      · <a href="./screen-design.md">画面設計</a>
+      · <a href="./screen-flow.html">遷移概要</a>
+      · <a href="../wireframes/">フル版</a>
+    </div>
 
     <div class="wf-tools">
       <div class="wf-nav-note">ワイヤーフレーム操作（画面切替用・本アプリのUIではない）</div>
@@ -975,123 +823,71 @@
     <div class="phone" id="phone">
       <div class="status-bar"><span>9:41</span><span>DEIDEI</span><span>100%</span></div>
 
-      <!-- ========== 開始 ========== -->
-      <section class="screen active" id="s-home" data-title="01 TOP（参加者向け）">
+      <!-- P-01 TOP -->
+      <section class="screen active" id="s-home" data-title="P-01 TOP（参加者向け）">
         <div class="top-screen">
           <a class="top-admin-link" href="#s-admin-login">admin</a>
           <div class="top-body">
-            <p class="wf-id" style="text-align:left">WF-01 / 参加者向け入口</p>
+            <p class="wf-id" style="text-align:left">P-01 / F-23</p>
             <div class="logo-box">
               <div class="logo-mark">［ロゴ］</div>
               <div class="logo-name">DEIDEI CardGame</div>
             </div>
             <p class="title-lg" style="margin-top:4px">研修用カードゲーム</p>
-            <p class="note">参加コードと表示名でセッションに入れます。<br />セッションの作成はファシリテーター（admin）のみです。</p>
             <a class="btn primary block xl" href="#s-join">参加する</a>
           </div>
         </div>
       </section>
 
-      <section class="screen" id="s-facil-create" data-title="30 Admin：セッション作成">
-        <div class="hdr">
-          <a class="back" href="#s-admin-sessions">戻る</a>
-          <h1>セッション作成</h1>
-        </div>
-        <div class="body">
-          <p class="wf-id">WF-30 / F-01（adminのみ）</p>
-          <p class="note">セッション作成はファシリ admin からのみ。一般参加者のTOPには出さない。</p>
-          <label class="stack">
-            <span class="label">終了ターン数</span>
-            <input class="input" type="number" value="5" min="1" max="5" readonly />
-          </label>
-          <p class="note">最大5ターン（ルール準拠）。作成後に参加コードが発行される。</p>
-          <div class="box muted">
-            <div class="label">作成者</div>
-            <div>ファシリテーター（adminログイン中）</div>
-          </div>
-        </div>
-        <div class="foot">
-          <a class="btn primary block grow" href="#s-facil-code">作成する</a>
-        </div>
-      </section>
-
-      <section class="screen" id="s-facil-code" data-title="31 Admin：作成直後（参加コード）">
-        <div class="hdr">
-          <a class="back" href="#s-admin-sessions">戻る</a>
-          <h1>参加コード・待機</h1>
-        </div>
-        <div class="body">
-          <p class="wf-id">WF-31 / F-01, F-03（admin）</p>
-          <div class="box" style="text-align:center">
-            <div class="label">参加コード</div>
-            <div class="title-lg" style="letter-spacing:0.2em">A7K2M9</div>
-            <p class="note">参加者へ口頭・紙で共有</p>
-          </div>
-          <div class="box muted">
-            <div class="row between"><span>終了ターン</span><strong>5</strong></div>
-            <div class="row between"><span>参加人数</span><strong>3 / 6</strong></div>
-          </div>
-          <p class="label">参加者一覧（同期）</p>
-          <div class="list">
-            <div class="item"><span>たろう</span><span class="chip">参加済</span></div>
-            <div class="item"><span>はなこ</span><span class="chip">参加済</span></div>
-            <div class="item"><span>じろう</span><span class="chip">参加済</span></div>
-          </div>
-          <p class="note">作成直後の確認。以降の管理はセッション一覧→詳細から。</p>
-        </div>
-        <div class="foot">
-          <a class="btn ghost grow" href="#s-admin-sessions">一覧へ</a>
-          <a class="btn primary grow" href="#s-admin-session-detail">詳細へ</a>
-        </div>
-      </section>
-
-      <section class="screen" id="s-join" data-title="02 参加者：参加（コード・表示名）">
+      <!-- P-02 参加 -->
+      <section class="screen" id="s-join" data-title="P-02 参加（コード・表示名）">
         <div class="hdr">
           <a class="back" href="#s-home">戻る</a>
           <h1>セッションに参加</h1>
         </div>
         <div class="body">
-          <p class="wf-id">WF-02 / F-02, F-19</p>
+          <p class="wf-id">P-02 / F-02</p>
           <div class="stack">
             <span class="label">参加コード（6桁）</span>
             <div class="code-cells" role="group" aria-label="参加コード6桁">
-            <div class="cell">A</div>
-            <div class="cell">7</div>
-            <div class="cell">K</div>
-            <div class="cell">2</div>
-            <div class="cell">M</div>
-            <div class="cell">9</div>
-          </div>
+              <div class="cell">A</div>
+              <div class="cell">7</div>
+              <div class="cell">K</div>
+              <div class="cell">2</div>
+              <div class="cell">M</div>
+              <div class="cell">9</div>
+            </div>
           </div>
           <label class="stack">
             <span class="label">表示名</span>
             <input class="input" type="text" value="たろう" readonly />
           </label>
-          <p class="note">同一セッション内で表示名が重複すると参加不可。別端末からの再接続も同じ入力。</p>
+          <p class="note">同一セッション内で表示名が重複すると参加できません。</p>
         </div>
         <div class="foot">
           <a class="btn primary block grow" href="#s-join-wait">参加する</a>
         </div>
       </section>
 
-      <section class="screen" id="s-join-error" data-title="03 参加者：参加エラー">
+      <!-- P-03 参加エラー -->
+      <section class="screen" id="s-join-error" data-title="P-03 参加エラー">
         <div class="hdr">
           <a class="back" href="#s-join">戻る</a>
           <h1>参加できません</h1>
         </div>
         <div class="body">
-          <p class="wf-id">WF-03 / F-02</p>
+          <p class="wf-id">P-03 / F-02</p>
           <div class="err">参加コードが正しくないか、表示名が既に使われています。</div>
           <div class="stack">
             <span class="label">参加コード（6桁）</span>
             <div class="code-cells" role="group" aria-label="参加コード6桁">
-            <div class="cell">X</div>
-            <div class="cell">X</div>
-            <div class="cell">X</div>
-            <div class="cell">X</div>
-            <div class="cell">X</div>
-            <div class="cell">X</div>
-          </div>
+              <div class="cell">X</div>
+              <div class="cell">X</div>
+              <div class="cell">X</div>
+              <div class="cell">X</div>
+              <div class="cell">X</div>
+              <div class="cell">X</div>
+            </div>
           </div>
           <label class="stack">
             <span class="label">表示名</span>
@@ -1103,182 +899,159 @@
         </div>
       </section>
 
-      <section class="screen" id="s-join-wait" data-title="04 参加者：待機・同期">
-        <div class="hdr">
-          <h1>待機中</h1>
-        </div>
+      <!-- P-04 待機・同期 -->
+      <section class="screen" id="s-join-wait" data-title="P-04 待機・同期">
+        <div class="hdr"><h1>待機中</h1></div>
         <div class="body">
-          <p class="wf-id">WF-04 / F-03</p>
+          <p class="wf-id">P-04 / F-03</p>
           <div class="box muted" style="text-align:center">
-            <p>卓の状態を同期しています…</p>
+            <p><span class="poll-dot"></span>卓の状態を同期しています…</p>
           </div>
           <div class="box">
             <div class="row between"><span>表示名</span><strong>たろう</strong></div>
             <div class="row between"><span>参加コード</span><strong>A7K2M9</strong></div>
             <div class="row between"><span>参加者</span><strong>3名</strong></div>
           </div>
-        </div>
-      </section>
-
-      <section class="screen" id="s-order" data-title="32 Admin：手番順の決定">
-        <div class="hdr">
-          <a class="back" href="#s-facil-code">戻る</a>
-          <h1>手番順</h1>
-        </div>
-        <div class="body">
-          <p class="wf-id">WF-32 / F-04（admin）</p>
-          <p class="note">手番順の決定はファシリ admin 側。決定後にゲーム開始。</p>
-          <p class="label">向き</p>
-          <div class="split-2">
-            <button type="button" class="btn primary">右回り</button>
-            <button type="button" class="btn">左回り</button>
-          </div>
-          <p class="label">順番（上から1番手）</p>
           <div class="list">
-            <div class="item"><span>1. たろう</span><span class="chip">自分</span></div>
-            <div class="item"><span>2. はなこ</span><span></span></div>
-            <div class="item"><span>3. じろう</span><span></span></div>
+            <div class="item"><span>たろう</span><span class="chip">自分</span></div>
+            <div class="item"><span>はなこ</span><span class="chip">参加済</span></div>
+            <div class="item"><span>じろう</span><span class="chip">参加済</span></div>
           </div>
-          <p class="note">以降の各フェーズはこの順番で一巡する。</p>
-        </div>
-        <div class="foot">
-          <a class="btn primary block grow" href="#s-admin-session-detail-play">この順番で開始</a>
+          <p class="note">ファシリテーターが手番順を決めて開始するまでお待ちください。</p>
         </div>
       </section>
 
-      <section class="screen" id="s-ready" data-title="05 プレイ準備" data-play="1" data-turn="1 / 5" data-whose="開始前（準備）" data-mine="0" data-score="—" data-emp="2" data-coin="0">
-      <div class="hdr" style="justify-content:space-between;gap:8px"><h1>準備完了</h1><span class="hdr-turn">ターン 1/5</span></div>
-      <div class="body">
-        <p class="wf-id">WF-05 / F-03</p>
-        <div class="ready-count">
-          <div class="label">まもなく給与フェーズへ</div>
-          <div class="num" id="readyCountdown">10</div>
-          <div class="note">秒後に自動で進みます</div>
-        </div>
-        <div class="box">
-          <div class="row between"><span>手番順</span><strong>たろう → はなこ → じろう</strong></div>
-        </div>
-      </div>
-      <div class="game-status" data-injected="1">
-        <div class="gs-top">
-          <div>
-            <div class="gs-player">あなた（たろう）</div>
-            <div class="gs-whose other"><span class="js-whose">開始前（準備）</span></div>
-          </div>
-          <div class="gs-rank">順位 2位</div>
-        </div>
-        <div class="gs-stats">
-          <div class="gs-stat"><span class="gs-k">仕事力</span><span class="gs-v js-score">—</span></div>
-          <div class="gs-stat"><span class="gs-k">従業員</span><span class="gs-v js-emp">2</span></div>
-          <div class="gs-stat"><span class="gs-k">コイン</span><span class="gs-v js-coin">0</span></div>
-        </div>
-        <div class="gs-links">
-          <a href="#s-list-solutions" class="js-link-sol">施策一覧</a>
-          <a href="#s-list-employees" class="js-link-emp">従業員一覧</a>
-        </div>
-      </div>
-    </section>
-
-      <!-- ========== 各ターン ========== -->
-      <section class="screen" id="s-turn-salary" data-title="06 ターン：給与" data-play="1" data-turn="1 / 5" data-whose="給与フェーズ（一斉）" data-mine="1" data-score="4" data-emp="2" data-coin="0">
-        <div class="hdr hdr-phase">
-          <div class="phase-crumb"><span class="pc on">給与</span><span class="sep">＞</span><span class="pc">退職</span><span class="sep">＞</span><span class="pc">施策</span><span class="sep">＞</span><span class="pc">採用</span></div>
-        <span class="hdr-turn">ターン 1/5</span>
-      </div>
-
-<div class="body">
-          <p class="wf-id">WF-06 / F-06</p>
-
-          <div class="pay-hero">
-            <div class="pay-label">受け取ったコイン</div>
-            <div class="pay-amount fx-pay">+8</div>
-            <div class="pay-unit">コイン</div>
-            <div class="pay-detail">仕事力 4 × 2</div>
-          </div>
-
-          <div class="pay-balance">
-            <span class="label">残高（これまでのコイン含む）</span>
-            <span class="v">8</span>
-          </div>
-
-          <div class="pay-wait">
-            <div class="row between"><span>確認状況</span><strong>1 / 3 人が確認済み</strong></div>
-            <div class="note">全員が確認すると退職フェーズへ</div>
-          </div>
-        </div>
-        <div class="foot">
-          <a class="btn primary block grow" href="#s-turn-salary-wait">確認</a>
-        </div>
-      <div class="game-status" data-injected="1">
-                <div class="gs-top">
-          <div>
-            <div class="gs-player">あなた（たろう）</div>
-            <div class="gs-whose mine"><span class="js-whose">給与フェーズ（一斉）</span></div>
-          </div>
-          <div class="gs-rank">順位 2位</div>
-        </div>
-        <div class="gs-stats">
-          <div class="gs-stat"><span class="gs-k">仕事力</span><span class="gs-v js-score">4</span></div>
-          <div class="gs-stat"><span class="gs-k">従業員</span><span class="gs-v js-emp">2</span></div>
-          <div class="gs-stat"><span class="gs-k">コイン</span><span class="gs-v js-coin">0</span></div>
-        </div>
-        <div class="gs-links">
-          <a href="#s-list-solutions" class="js-link-sol">施策一覧</a>
-          <a href="#s-list-employees" class="js-link-emp">従業員一覧</a>
-        </div>
-      </div>
-    </section>
-
-      <section class="screen" id="s-turn-salary-wait" data-title="07 給与：全員の確認待ち" data-play="1" data-turn="1 / 5" data-whose="給与フェーズ（確認待ち）" data-mine="0" data-score="4" data-emp="2" data-coin="8">
-      <div class="hdr hdr-phase">
-        <div class="phase-crumb"><span class="pc on">給与</span><span class="sep">＞</span><span class="pc">退職</span><span class="sep">＞</span><span class="pc">施策</span><span class="sep">＞</span><span class="pc">採用</span></div>
-        <span class="hdr-turn">ターン 1/5</span>
-      </div>
-      <div class="body">
-        <p class="wf-id">WF-07 / F-06</p>
-        <div class="box muted" style="text-align:center;padding:28px 12px">
-          <p class="title-lg" style="margin:0">しばらくお待ちください</p>
-        </div>
-      </div>
-      <div class="game-status" data-injected="1">
-        <div class="gs-top">
-          <div>
-            <div class="gs-player">あなた（たろう）</div>
-            <div class="gs-whose other"><span class="js-whose">給与フェーズ（確認待ち）</span></div>
-          </div>
-          <div class="gs-rank">順位 2位</div>
-        </div>
-        <div class="gs-stats">
-          <div class="gs-stat"><span class="gs-k">仕事力</span><span class="gs-v js-score">4</span></div>
-          <div class="gs-stat"><span class="gs-k">従業員</span><span class="gs-v js-emp">2</span></div>
-          <div class="gs-stat"><span class="gs-k">コイン</span><span class="gs-v js-coin">8</span></div>
-        </div>
-        <div class="gs-links">
-          <a href="#s-list-solutions" class="js-link-sol">施策一覧</a>
-          <a href="#s-list-employees" class="js-link-emp">従業員一覧</a>
-        </div>
-      </div>
-    </section>
-
-      <section class="screen" id="s-retire-dice" data-title="08 退職：出目入力" data-play="1" data-turn="1 / 5" data-whose="自分の手番・たろう" data-mine="1" data-score="4" data-emp="2" data-coin="8">
-        <div class="hdr hdr-phase">
-          <div class="phase-crumb"><span class="pc">給与</span><span class="sep">＞</span><span class="pc on">退職</span><span class="sep">＞</span><span class="pc">施策</span><span class="sep">＞</span><span class="pc">採用</span></div>
+      <!-- P-05 準備 -->
+      <section class="screen" id="s-ready" data-title="P-05 プレイ準備" data-play="1" data-turn="1 / 5" data-whose="開始前（準備）" data-mine="0" data-score="—" data-emp="2" data-coin="0">
+        <div class="hdr" style="justify-content:space-between;gap:8px">
+          <h1>準備完了</h1>
           <span class="hdr-turn">ターン 1/5</span>
         </div>
         <div class="body">
-          <p class="wf-id">WF-08 / F-07, F-08</p>
+          <p class="wf-id">P-05 / F-03, F-05</p>
+          <div class="ready-count">
+            <div class="label">まもなく給与フェーズへ</div>
+            <div class="num" id="readyCountdown">10</div>
+            <div class="note">秒後に自動で進みます</div>
+          </div>
+          <div class="box">
+            <div class="row between"><span>手番順</span><strong>たろう → はなこ → じろう</strong></div>
+            <div class="row between" style="margin-top:6px"><span>初期状態</span><strong>社長1・従業員2</strong></div>
+          </div>
+        </div>
+        <div class="game-status">
+          <div class="gs-top">
+            <div>
+              <div class="gs-player">あなた（たろう）</div>
+              <div class="gs-whose other">開始前（準備）</div>
+            </div>
+            <div class="gs-rank">順位 —</div>
+          </div>
+          <div class="gs-stats">
+            <div class="gs-stat"><span class="gs-k">仕事力</span><span class="gs-v">—</span></div>
+            <div class="gs-stat"><span class="gs-k">従業員</span><span class="gs-v">2</span></div>
+            <div class="gs-stat"><span class="gs-k">コイン</span><span class="gs-v">0</span></div>
+          </div>
+          <div class="gs-links">
+            <a class="btn-link" href="#s-list-solutions">ソリューション一覧</a>
+            <a class="btn-link" href="#s-list-employees">従業員一覧</a>
+          </div>
+        </div>
+      </section>
+
+      <!-- P-06 給与（確認／確認待ちは同一画面の状態切替） -->
+      <section class="screen" id="s-turn-salary" data-title="P-06 給与" data-play="1" data-salary-state="confirm">
+        <div class="hdr hdr-phase">
+          <div class="phase-crumb"><span class="pc on">給与</span><span class="sep">＞</span><span class="pc">退職</span><span class="sep">＞</span><span class="pc">ソリューション</span><span class="sep">＞</span><span class="pc">採用</span></div>
+          <span class="hdr-turn">ターン 1/5</span>
+        </div>
+        <div class="body">
+          <p class="wf-id">P-06 / F-06, F-03</p>
+
+          <!-- 状態: 確認前 -->
+          <div class="salary-state" data-salary-view="confirm">
+            <div class="pay-hero">
+              <div class="pay-label">受け取ったコイン</div>
+              <div class="pay-amount">+8</div>
+              <div class="pay-unit">コイン</div>
+              <div class="pay-detail">仕事力 4 × 2</div>
+            </div>
+            <div class="pay-balance">
+              <span class="label">残高（これまでのコイン含む）</span>
+              <span class="v">8</span>
+            </div>
+            <div class="pay-wait">
+              <div class="row between"><span>確認状況</span><strong>1 / 3 人が確認済み</strong></div>
+            </div>
+          </div>
+
+          <!-- 状態: 確認済み／他者待ち（旧 P-07） -->
+          <div class="salary-state" data-salary-view="wait" hidden>
+            <div class="box muted" style="text-align:center;padding:28px 12px">
+              <p class="title-lg" style="margin:0"><span class="poll-dot"></span>しばらくお待ちください</p>
+              <p class="note">確認済みです。他の参加者の確認を待っています（同期中）</p>
+            </div>
+            <div class="pay-balance">
+              <span class="label">残高（これまでのコイン含む）</span>
+              <span class="v">8</span>
+            </div>
+            <div class="pay-wait">
+              <div class="row between"><span>確認状況</span><strong>2 / 3 人が確認済み</strong></div>
+            </div>
+          </div>
+        </div>
+        <div class="foot salary-state" data-salary-view="confirm">
+          <button type="button" class="btn primary block grow" id="salaryConfirmBtn">確認</button>
+        </div>
+        <div class="game-status" id="salaryGameStatus">
+          <div class="gs-top">
+            <div>
+              <div class="gs-player">あなた（たろう）</div>
+              <div class="gs-whose mine" id="salaryWhose">一斉確認</div>
+            </div>
+            <div class="gs-rank">順位 2位</div>
+          </div>
+          <div class="gs-stats">
+            <div class="gs-stat"><span class="gs-k">仕事力</span><span class="gs-v">4</span></div>
+            <div class="gs-stat"><span class="gs-k">従業員</span><span class="gs-v">2</span></div>
+            <div class="gs-stat"><span class="gs-k">コイン</span><span class="gs-v" id="salaryCoinStat">0</span></div>
+          </div>
+          <div class="gs-links">
+            <a class="btn-link" href="#s-list-solutions">ソリューション一覧</a>
+            <a class="btn-link" href="#s-list-employees">従業員一覧</a>
+          </div>
+        </div>
+      </section>
+
+      <!-- P-07 退職出目 -->
+      <section class="screen" id="s-retire-dice" data-title="P-07 退職：出目入力" data-play="1">
+        <div class="hdr hdr-phase">
+          <div class="phase-crumb"><span class="pc">給与</span><span class="sep">＞</span><span class="pc on">退職</span><span class="sep">＞</span><span class="pc">ソリューション</span><span class="sep">＞</span><span class="pc">採用</span></div>
+          <span class="hdr-turn">ターン 1/5</span>
+        </div>
+        <div class="body">
+          <p class="wf-id">P-07 / F-07, F-08</p>
           <div class="emp-card">
-            <div class="emp-head">
-              <div>
-                <div class="emp-label">退職判定の対象</div>
-                <div class="emp-name">リー</div>
+            <div class="emp-with-illus">
+              <div class="emp-illus-wrap">
+                <svg class="cand-illus" viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+  <rect width="80" height="80" rx="12" fill="#e8e8e8"/>
+  <circle cx="40" cy="30" r="14" fill="#bbb"/>
+  <ellipse cx="40" cy="62" rx="22" ry="16" fill="#bbb"/>
+</svg>
+                <div class="risk-label">退職リスク対象</div>
               </div>
-              <div class="wp"><strong>5</strong>（元・3）</div>
+              <div style="flex:1">
+                <div class="emp-head">
+                  <div>
+                    <div class="emp-label">退職判定の対象</div>
+                    <div class="emp-name">リー</div>
+                  </div>
+                  <div class="wp"><strong>仕事力 5</strong></div>
+                </div>
+                <div class="ico-row"><span class="ico">グローバル</span></div>
+              </div>
             </div>
-            <div class="ico-row">
-              <span class="ico">グローバル</span>
-            </div>
-            <p class="emp-farewell">仕事力の高いリー。守りが薄く、いま去られると痛い。</p>
           </div>
           <p class="label">リアルのサイコロを振り、出た目を選ぶ</p>
           <div class="dice-faces" id="diceRetire">
@@ -1289,973 +1062,778 @@
             <button type="button" class="die-face" data-n="5" aria-label="5の目"><span class="pip"></span><span class="pip"></span><span class="pip"></span><span class="pip"></span><span class="pip"></span><span class="pip"></span><span class="pip"></span><span class="pip"></span><span class="pip"></span></button>
             <button type="button" class="die-face" data-n="6" aria-label="6の目"><span class="pip"></span><span class="pip"></span><span class="pip"></span><span class="pip"></span><span class="pip"></span><span class="pip"></span><span class="pip"></span><span class="pip"></span><span class="pip"></span></button>
           </div>
-          <p class="note">奇数 → 退職 / 偶数 → 残留。離職防止があれば残留。</p>
         </div>
         <div class="foot">
           <a class="btn primary block grow" href="#s-retire-result">出目を確定</a>
         </div>
-        
-      <div class="game-status" data-injected="1">
-                <div class="gs-top">
-          <div>
-            <div class="gs-player">あなた（たろう）</div>
-            <div class="gs-whose mine"><span class="js-whose">自分の手番・たろう</span></div>
-          </div>
-          <div class="gs-rank">順位 2位</div>
-        </div>
-        <div class="gs-stats">
-          <div class="gs-stat"><span class="gs-k">仕事力</span><span class="gs-v js-score">4</span></div>
-          <div class="gs-stat"><span class="gs-k">従業員</span><span class="gs-v js-emp">2</span></div>
-          <div class="gs-stat"><span class="gs-k">コイン</span><span class="gs-v js-coin">8</span></div>
-        </div>
-        <div class="gs-links">
-          <a href="#s-list-solutions" class="js-link-sol">施策一覧</a>
-          <a href="#s-list-employees" class="js-link-emp">従業員一覧</a>
-        </div>
-      </div>
-    </section>
-
-      <section class="screen" id="s-retire-result" data-title="09 退職：結果（退職）" data-play="1" data-turn="1 / 5" data-whose="自分の手番・たろう" data-mine="1" data-score="4" data-emp="1" data-coin="8">
-      <div class="hdr hdr-phase">
-        <div class="phase-crumb"><span class="pc">給与</span><span class="sep">＞</span><span class="pc on">退職</span><span class="sep">＞</span><span class="pc">施策</span><span class="sep">＞</span><span class="pc">採用</span></div>
-        <span class="hdr-turn">ターン 1/5</span>
-      </div>
-
-      <div class="body">
-        <p class="wf-id">WF-09 / F-08</p>
-        <div class="fx-stage bust">
-          <div class="fx-retire">退職…</div>
-          <div class="fx-sub">リーが、惜しくも去っていきました</div>
-        </div>
-        <div class="emp-card">
-          <div class="emp-head">
+        <div class="game-status">
+          <div class="gs-top">
             <div>
-              <div class="emp-label">去った従業員</div>
-              <div class="emp-name">リー</div>
+              <div class="gs-player">あなた（たろう）</div>
+              <div class="gs-whose mine">自分の手番・たろう</div>
             </div>
-            <div class="wp"><strong>5</strong>（元・3）</div>
+            <div class="gs-rank">順位 2位</div>
           </div>
-          <div class="ico-row">
-            <span class="ico">グローバル</span>
-          </div>
-          <p class="emp-farewell">仕事力 −5。グローバル属性のカバーが追いつかなかった。</p>
-        </div>
-        <div class="fx-cause">
-          <div class="label">原因</div>
-          <div>出目 <strong>3（奇数）</strong>。属性「グローバル」が施策でカバーされていなかった。</div>
-        </div>
-        <div class="box muted">
-          <div class="row between"><span>離職防止</span><strong>なし</strong></div>
-        </div>
-      </div>
-      <div class="foot">
-        <a class="btn primary block grow" href="#s-solution-draw">次へ（ソリューション）</a>
-      </div>
-      <div class="game-status" data-injected="1">
-                <div class="gs-top">
-          <div>
-            <div class="gs-player">あなた（たろう）</div>
-            <div class="gs-whose mine"><span class="js-whose">自分の手番・たろう</span></div>
-          </div>
-          <div class="gs-rank">順位 2位</div>
-        </div>
-        <div class="gs-stats">
-          <div class="gs-stat"><span class="gs-k">仕事力</span><span class="gs-v js-score">4</span></div>
-          <div class="gs-stat"><span class="gs-k">従業員</span><span class="gs-v js-emp">1</span></div>
-          <div class="gs-stat"><span class="gs-k">コイン</span><span class="gs-v js-coin">8</span></div>
-        </div>
-        <div class="gs-links">
-          <a href="#s-list-solutions" class="js-link-sol">施策一覧</a>
-          <a href="#s-list-employees" class="js-link-emp">従業員一覧</a>
-        </div>
-      </div>
-    </section>
-
-      <section class="screen" id="s-retire-prevented" data-title="10 退職：結果（残留）" data-play="1" data-turn="1 / 5" data-whose="自分の手番・たろう" data-mine="1" data-score="4" data-emp="2" data-coin="8">
-      <div class="hdr hdr-phase">
-        <div class="phase-crumb"><span class="pc">給与</span><span class="sep">＞</span><span class="pc on">退職</span><span class="sep">＞</span><span class="pc">施策</span><span class="sep">＞</span><span class="pc">採用</span></div>
-        <span class="hdr-turn">ターン 1/5</span>
-      </div>
-
-      <div class="body">
-        <p class="wf-id">WF-10 / F-08</p>
-        <div class="fx-stage safe">
-          <div class="fx-safe">残留</div>
-          <div class="fx-sub">佐藤は、離職防止で踏みとどまった</div>
-        </div>
-        <div class="emp-card">
-          <div class="emp-head">
-            <div>
-              <div class="emp-label">判定対象</div>
-              <div class="emp-name">佐藤</div>
-            </div>
-            <div class="wp"><strong>4</strong>（元・2）</div>
-          </div>
-          <div class="ico-row">
-            <span class="ico">くらし</span>
-          </div>
-          <p class="emp-farewell">くらし属性の守りが効き、チームに残った。</p>
-        </div>
-        <div class="fx-cause">
-          <div class="label">原因</div>
-          <div>出目は <strong>5（奇数）</strong> だが、離職防止（くらし）により残留。サイコロより守りが優先。</div>
-        </div>
-        <div class="box muted">
-          <div class="row between"><span>離職防止</span><strong>あり（蓄積）</strong></div>
-        </div>
-      </div>
-      <div class="foot">
-        <a class="btn primary block grow" href="#s-solution-draw">次へ</a>
-      </div>
-      <div class="game-status" data-injected="1">
-                <div class="gs-top">
-          <div>
-            <div class="gs-player">あなた（たろう）</div>
-            <div class="gs-whose mine"><span class="js-whose">自分の手番・たろう</span></div>
-          </div>
-          <div class="gs-rank">順位 2位</div>
-        </div>
-        <div class="gs-stats">
-          <div class="gs-stat"><span class="gs-k">仕事力</span><span class="gs-v js-score">4</span></div>
-          <div class="gs-stat"><span class="gs-k">従業員</span><span class="gs-v js-emp">2</span></div>
-          <div class="gs-stat"><span class="gs-k">コイン</span><span class="gs-v js-coin">8</span></div>
-        </div>
-        <div class="gs-links">
-          <a href="#s-list-solutions" class="js-link-sol">施策一覧</a>
-          <a href="#s-list-employees" class="js-link-emp">従業員一覧</a>
-        </div>
-      </div>
-    </section>
-
-      <section class="screen" id="s-solution-draw" data-title="11 ソリューション：カード読取" data-play="1" data-turn="1 / 5" data-whose="自分の手番・たろう" data-mine="1" data-score="4" data-emp="1" data-coin="8">
-        <div class="hdr hdr-phase">
-          <div class="phase-crumb"><span class="pc">給与</span><span class="sep">＞</span><span class="pc">退職</span><span class="sep">＞</span><span class="pc on">施策</span><span class="sep">＞</span><span class="pc">採用</span></div>
-        <span class="hdr-turn">ターン 1/5</span>
-      </div>
-<div class="body">
-          <p class="wf-id">WF-11 / F-09, F-10</p>
-<div class="box muted">
-            <div class="row between"><span>コスト</span><strong>1枚 = 1コイン</strong></div>
-          </div>
-          <div class="placeholder tall">［プレースホルダ］カメラ読取<br />カードQR → マスタ参照</div>
-          <p class="note">手入力はしない。山札から公開されたカードを物理で選び読取。</p>
-        </div>
-        <div class="foot">
-          <a class="btn ghost grow" href="#s-hire-select">skip</a>
-          <a class="btn primary grow" href="#s-solution-result">読取へ</a>
-        </div>
-        
-      <div class="game-status" data-injected="1">
-                <div class="gs-top">
-          <div>
-            <div class="gs-player">あなた（たろう）</div>
-            <div class="gs-whose mine"><span class="js-whose">自分の手番・たろう</span></div>
-          </div>
-          <div class="gs-rank">順位 2位</div>
-        </div>
-        <div class="gs-stats">
-          <div class="gs-stat"><span class="gs-k">仕事力</span><span class="gs-v js-score">4</span></div>
-          <div class="gs-stat"><span class="gs-k">従業員</span><span class="gs-v js-emp">1</span></div>
-          <div class="gs-stat"><span class="gs-k">コイン</span><span class="gs-v js-coin">8</span></div>
-        </div>
-        <div class="gs-links">
-          <a href="#s-list-solutions" class="js-link-sol">施策一覧</a>
-          <a href="#s-list-employees" class="js-link-emp">従業員一覧</a>
-        </div>
-      </div>
-    </section>
-
-      <section class="screen" id="s-solution-result" data-title="12 ソリューション：効果確認・演出" data-play="1" data-turn="1 / 5" data-whose="自分の手番・たろう" data-mine="1" data-score="6" data-emp="1" data-coin="7">
-      <div class="hdr hdr-phase">
-        <div class="phase-crumb"><span class="pc">給与</span><span class="sep">＞</span><span class="pc">退職</span><span class="sep">＞</span><span class="pc on">施策</span><span class="sep">＞</span><span class="pc">採用</span></div>
-        <span class="hdr-turn">ターン 1/5</span>
-      </div>
-      <div class="body">
-        <p class="wf-id">WF-12 / F-11, F-15</p>
-
-        <div class="card-brief">
-          <div class="card-name">SOL-012 フレックス勤務</div>
-          <div class="ico-row">
-            <span class="ico">くらし</span>
-            <span class="ico">フェア</span>
-            <span class="ico fx">採用</span>
-            <span class="ico fx">離職防止</span>
-          </div>
-          <p class="note" style="margin:6px 0 0">コイン消費 −1</p>
-        </div>
-
-        <div class="fx-stage safe">
-          <div class="fx-power"><span class="plus">仕事力 +2</span></div>
-          <div class="fx-sub">同じ属性の従業員に累計追加</div>
-        </div>
-
-        <div class="fx-impact">
-          <div class="row between"><span>効果対象</span><strong>従業員A（くらし）ほか</strong></div>
-          <div class="row between"><span>合計仕事力</span><strong>4 → 6</strong></div>
-        </div>
-      </div>
-      <div class="foot">
-        <a class="btn ghost grow" href="#s-hire-select">skip</a>
-        <a class="btn primary grow" href="#s-solution-extra">done</a>
-      </div>
-      <div class="game-status" data-injected="1">
-                <div class="gs-top">
-          <div>
-            <div class="gs-player">あなた（たろう）</div>
-            <div class="gs-whose mine"><span class="js-whose">自分の手番・たろう</span></div>
-          </div>
-          <div class="gs-rank">順位 2位</div>
-        </div>
-        <div class="gs-stats">
-          <div class="gs-stat"><span class="gs-k">仕事力</span><span class="gs-v js-score">6</span></div>
-          <div class="gs-stat"><span class="gs-k">従業員</span><span class="gs-v js-emp">1</span></div>
-          <div class="gs-stat"><span class="gs-k">コイン</span><span class="gs-v js-coin">7</span></div>
-        </div>
-        <div class="gs-links">
-          <a href="#s-list-solutions" class="js-link-sol">施策一覧</a>
-          <a href="#s-list-employees" class="js-link-emp">従業員一覧</a>
-        </div>
-      </div>
-    </section>
-
-      <section class="screen" id="s-solution-extra" data-title="13 ソリューション：追加で引くか" data-play="1" data-turn="1 / 5" data-whose="自分の手番・たろう" data-mine="1" data-score="6" data-emp="1" data-coin="7">
-        <div class="hdr hdr-phase">
-          <div class="phase-crumb"><span class="pc">給与</span><span class="sep">＞</span><span class="pc">退職</span><span class="sep">＞</span><span class="pc on">施策</span><span class="sep">＞</span><span class="pc">採用</span></div>
-        <span class="hdr-turn">ターン 1/5</span>
-      </div>
-<div class="body">
-          <p class="wf-id">WF-13 / F-10</p>
-<div class="box muted">
-            <p>一巡が終わりました。追加でソリューションカードを引きますか？</p>
-          </div>
-          <div class="box">
-            <div class="row between"><span>追加コスト</span><strong>1コイン / 枚</strong></div>
-          </div>
-          <p class="note">選べる枚数に制限なし（コインがある限り）。各参加者が各自選択。</p>
-        </div>
-        <div class="foot">
-          <a class="btn ghost grow" href="#s-hire-select">引かない</a>
-          <a class="btn primary grow" href="#s-solution-draw">追加で引く</a>
-        </div>
-        
-      <div class="game-status" data-injected="1">
-                <div class="gs-top">
-          <div>
-            <div class="gs-player">あなた（たろう）</div>
-            <div class="gs-whose mine"><span class="js-whose">自分の手番・たろう</span></div>
-          </div>
-          <div class="gs-rank">順位 2位</div>
-        </div>
-        <div class="gs-stats">
-          <div class="gs-stat"><span class="gs-k">仕事力</span><span class="gs-v js-score">6</span></div>
-          <div class="gs-stat"><span class="gs-k">従業員</span><span class="gs-v js-emp">1</span></div>
-          <div class="gs-stat"><span class="gs-k">コイン</span><span class="gs-v js-coin">7</span></div>
-        </div>
-        <div class="gs-links">
-          <a href="#s-list-solutions" class="js-link-sol">施策一覧</a>
-          <a href="#s-list-employees" class="js-link-emp">従業員一覧</a>
-        </div>
-      </div>
-    </section>
-
-      <section class="screen" id="s-hire-select" data-title="14 採用：カード読取" data-play="1" data-turn="1 / 5" data-whose="自分の手番・たろう" data-mine="1" data-score="6" data-emp="1" data-coin="7">
-      <div class="hdr hdr-phase">
-        <div class="phase-crumb"><span class="pc">給与</span><span class="sep">＞</span><span class="pc">退職</span><span class="sep">＞</span><span class="pc">施策</span><span class="sep">＞</span><span class="pc on">採用</span></div>
-        <span class="hdr-turn">ターン 1/5</span>
-      </div>
-      <div class="body">
-        <p class="wf-id">WF-14 / F-09, F-12</p>
-        <div class="box muted">
-          <div class="row between"><span>採用枠</span><strong>残り 2 / 3</strong></div>
-          <div class="row between"><span>コスト</span><strong>1人 = 1コイン</strong></div>
-        </div>
-        <div class="placeholder tall">［プレースホルダ］カメラ読取<br />採用カードQR → マスタ参照</div>
-        <p class="note">志望動機面のカードを読み取る。属性は裏（判定時に参照）。</p>
-        <a class="btn ghost block" href="#s-promote">昇進も選ぶ（任意）</a>
-      </div>
-      <div class="foot">
-        <a class="btn ghost grow" href="#s-done-skip">skip</a>
-        <a class="btn primary grow" href="#s-hire-compete">読取へ</a>
-      </div>
-      <div class="game-status" data-injected="1">
-        <div class="gs-top">
-          <div>
-            <div class="gs-player">あなた（たろう）</div>
-            <div class="gs-whose mine"><span class="js-whose">自分の手番・たろう</span></div>
-          </div>
-          <div class="gs-rank">順位 2位</div>
-        </div>
-        <div class="gs-stats">
-          <div class="gs-stat"><span class="gs-k">仕事力</span><span class="gs-v js-score">6</span></div>
-          <div class="gs-stat"><span class="gs-k">従業員</span><span class="gs-v js-emp">1</span></div>
-          <div class="gs-stat"><span class="gs-k">コイン</span><span class="gs-v js-coin">7</span></div>
-        </div>
-        <div class="gs-links">
-          <a href="#s-list-solutions" class="js-link-sol">施策一覧</a>
-          <a href="#s-list-employees" class="js-link-emp">従業員一覧</a>
-        </div>
-      </div>
-    </section>
-
-      <section class="screen" id="s-hire-compete" data-title="15 採用：バッティング／勝者申告" data-play="1" data-turn="1 / 5" data-whose="競合ストップ" data-mine="0" data-score="6" data-emp="1" data-coin="7">
-      <div class="hdr hdr-phase">
-        <div class="phase-crumb"><span class="pc">給与</span><span class="sep">＞</span><span class="pc">退職</span><span class="sep">＞</span><span class="pc">施策</span><span class="sep">＞</span><span class="pc on">採用</span></div>
-        <span class="hdr-turn">ターン 1/5</span>
-      </div>
-      <div class="body">
-        <p class="wf-id">WF-15 / F-13</p>
-        <div class="hire-stop">
-          <div class="label">STOP</div>
-          <div class="big">バッティング発生</div>
-          <div>候補A に複数参加者がトライ</div>
-        </div>
-        <div class="box">
-          <div class="row between"><span>競合者</span><strong>たろう / はなこ</strong></div>
-          <p class="note" style="margin:8px 0 0">卓上で勝負（じゃんけん等）。勝った人を下で選ぶ。</p>
-        </div>
-        <p class="label">卓上の勝負で勝った参加者</p>
-        <div class="list">
-          <div class="item selected"><span>たろう（自分）</span><span class="chip">選択</span></div>
-          <div class="item"><span>はなこ</span><span></span></div>
-        </div>
-        <div class="box muted">
-          <div>採用権: <strong>たろう</strong></div>
-          <p class="note" style="margin:6px 0 0">確定後、勝者のみが採用判定へ進む。</p>
-        </div>
-      </div>
-      <div class="foot">
-        <a class="btn primary block grow" href="#s-hire-result-ok">採用権を確定</a>
-      </div>
-      <div class="game-status" data-injected="1">
-        <div class="gs-top">
-          <div>
-            <div class="gs-player">あなた（たろう）</div>
-            <div class="gs-whose other"><span class="js-whose">競合ストップ</span></div>
-          </div>
-          <div class="gs-rank">順位 2位</div>
-        </div>
-        <div class="gs-stats">
-          <div class="gs-stat"><span class="gs-k">仕事力</span><span class="gs-v js-score">6</span></div>
-          <div class="gs-stat"><span class="gs-k">従業員</span><span class="gs-v js-emp">1</span></div>
-          <div class="gs-stat"><span class="gs-k">コイン</span><span class="gs-v js-coin">7</span></div>
-        </div>
-        <div class="gs-links">
-          <a href="#s-list-solutions" class="js-link-sol">施策一覧</a>
-          <a href="#s-list-employees" class="js-link-emp">従業員一覧</a>
-        </div>
-      </div>
-    </section>
-
-      <section class="screen" id="s-hire-result-ok" data-title="16 採用：成功" data-play="1" data-turn="1 / 5" data-whose="自分の手番・たろう" data-mine="1" data-score="6" data-emp="2" data-coin="6">
-      <div class="hdr hdr-phase">
-        <div class="phase-crumb"><span class="pc">給与</span><span class="sep">＞</span><span class="pc">退職</span><span class="sep">＞</span><span class="pc">施策</span><span class="sep">＞</span><span class="pc on">採用</span></div>
-        <span class="hdr-turn">ターン 1/5</span>
-      </div>
-      <div class="body">
-        <p class="wf-id">WF-16 / F-12, F-15</p>
-        <div class="card-brief">
-          <div class="card-name">候補A</div>
-          <div class="ico-row">
-            <span class="ico">くらし</span>
-            <span class="ico">フェア</span>
-          </div>
-          <p class="note" style="margin:6px 0 0">カバー: 満たす ・ コイン −1</p>
-        </div>
-        <div class="fx-stage safe">
-          <div class="fx-safe">採用できた！</div>
-          <div class="fx-sub">従業員が組織に加わりました</div>
-        </div>
-      </div>
-      <div class="foot">
-        <a class="btn primary block grow" href="#s-done-skip">done</a>
-      </div>
-      <div class="game-status" data-injected="1">
-        <div class="gs-top">
-          <div>
-            <div class="gs-player">あなた（たろう）</div>
-            <div class="gs-whose mine"><span class="js-whose">自分の手番・たろう</span></div>
-          </div>
-          <div class="gs-rank">順位 2位</div>
-        </div>
-        <div class="gs-stats">
-          <div class="gs-stat"><span class="gs-k">仕事力</span><span class="gs-v js-score">6</span></div>
-          <div class="gs-stat"><span class="gs-k">従業員</span><span class="gs-v js-emp">2</span></div>
-          <div class="gs-stat"><span class="gs-k">コイン</span><span class="gs-v js-coin">6</span></div>
-        </div>
-        <div class="gs-links">
-          <a href="#s-list-solutions" class="js-link-sol">施策一覧</a>
-          <a href="#s-list-employees" class="js-link-emp">従業員一覧</a>
-        </div>
-      </div>
-    </section>
-
-      <section class="screen" id="s-hire-result-ng" data-title="17 採用：失敗" data-play="1" data-turn="1 / 5" data-whose="自分の手番・たろう" data-mine="1" data-score="6" data-emp="1" data-coin="6">
-      <div class="hdr hdr-phase">
-        <a class="back" href="#s-hire-result-ok">戻る</a>
-        <div class="phase-crumb"><span class="pc">給与</span><span class="sep">＞</span><span class="pc">退職</span><span class="sep">＞</span><span class="pc">施策</span><span class="sep">＞</span><span class="pc on">採用</span></div>
-        <span class="hdr-turn">ターン 1/5</span>
-      </div>
-      <div class="body">
-        <p class="wf-id">WF-17 / F-12, F-15</p>
-        <div class="card-brief">
-          <div class="card-name">候補B</div>
-          <div class="ico-row">
-            <span class="ico">グローバル</span>
-          </div>
-          <p class="note" style="margin:6px 0 0">カバー: 不足 ・ コイン −1（消費）</p>
-        </div>
-        <div class="fx-stage bust">
-          <div class="fx-retire" style="font-size:28px">採用できない</div>
-          <div class="fx-sub">条件未達でもコインは消費</div>
-        </div>
-      </div>
-      <div class="foot">
-        <a class="btn primary block grow" href="#s-done-skip">done</a>
-      </div>
-      <div class="game-status" data-injected="1">
-        <div class="gs-top">
-          <div>
-            <div class="gs-player">あなた（たろう）</div>
-            <div class="gs-whose mine"><span class="js-whose">自分の手番・たろう</span></div>
-          </div>
-          <div class="gs-rank">順位 2位</div>
-        </div>
-        <div class="gs-stats">
-          <div class="gs-stat"><span class="gs-k">仕事力</span><span class="gs-v js-score">6</span></div>
-          <div class="gs-stat"><span class="gs-k">従業員</span><span class="gs-v js-emp">1</span></div>
-          <div class="gs-stat"><span class="gs-k">コイン</span><span class="gs-v js-coin">6</span></div>
-        </div>
-        <div class="gs-links">
-          <a href="#s-list-solutions" class="js-link-sol">施策一覧</a>
-          <a href="#s-list-employees" class="js-link-emp">従業員一覧</a>
-        </div>
-      </div>
-    </section>
-
-      <section class="screen" id="s-promote" data-title="18 採用フェーズ：昇進（任意）" data-play="1" data-turn="1 / 5" data-whose="自分の手番・たろう" data-mine="1" data-score="6" data-emp="2" data-coin="6">
-        <div class="hdr hdr-phase">
-          <a class="back" href="#s-hire-select">戻る</a>
-          <div class="phase-crumb"><span class="pc">給与</span><span class="sep">＞</span><span class="pc">退職</span><span class="sep">＞</span><span class="pc">施策</span><span class="sep">＞</span><span class="pc on">採用</span></div>
-        </div>
-<div class="body">
-          <p class="wf-id">WF-18 / F-14</p>
-<p class="note">昇進しなくてもよい。コストは別で1コイン。採用フェーズ内で選択。</p>
-          <div class="list">
-            <div class="item"><span>従業員A（くらし）</span><span class="chip">可</span></div>
-            <div class="item"><span>従業員B（キャリア）</span><span class="chip">不可</span></div>
-          </div>
-          <div class="box muted">
-            <div class="row between"><span>条件</span><strong>昇進カバー＋施策済</strong></div>
-            <div class="row between"><span>コスト</span><strong>1コイン</strong></div>
-          </div>
-        </div>
-        <div class="foot">
-          <a class="btn ghost grow" href="#s-hire-select">昇進しない</a>
-          <a class="btn primary grow" href="#s-done-skip">昇進する</a>
-        </div>
-        
-      <div class="game-status" data-injected="1">
-                <div class="gs-top">
-          <div>
-            <div class="gs-player">あなた（たろう）</div>
-            <div class="gs-whose mine"><span class="js-whose">自分の手番・たろう</span></div>
-          </div>
-          <div class="gs-rank">順位 2位</div>
-        </div>
-        <div class="gs-stats">
-          <div class="gs-stat"><span class="gs-k">仕事力</span><span class="gs-v js-score">6</span></div>
-          <div class="gs-stat"><span class="gs-k">従業員</span><span class="gs-v js-emp">2</span></div>
-          <div class="gs-stat"><span class="gs-k">コイン</span><span class="gs-v js-coin">6</span></div>
-        </div>
-        <div class="gs-links">
-          <a href="#s-list-solutions" class="js-link-sol">施策一覧</a>
-          <a href="#s-list-employees" class="js-link-emp">従業員一覧</a>
-        </div>
-      </div>
-    </section>
-
-      <section class="screen" id="s-done-skip" data-title="19 手番完了／他者待ち" data-play="1" data-turn="1 / 5" data-whose="他者の手番・はなこ" data-mine="0" data-score="6" data-emp="2" data-coin="5">
-        <div class="hdr hdr-phase">
-          <div class="phase-crumb"><span class="pc">給与</span><span class="sep">＞</span><span class="pc">退職</span><span class="sep">＞</span><span class="pc">施策</span><span class="sep">＞</span><span class="pc on">採用</span></div>
-          <span class="hdr-turn">ターン 1/5</span>
-        </div>
-        <div class="body">
-          <p class="wf-id">WF-19 / F-16</p>
-          <div class="box muted" style="text-align:center">
-            <p class="title-lg">手番完了</p>
-            <p>はなこの手番を待っています…</p>
-            <p class="note" style="margin:8px 0 0">自分の操作は終わり。他者のフェーズが進むまで待機。</p>
-          </div>
-        </div>
-        
-      <div class="game-status" data-injected="1">
-                <div class="gs-top">
-          <div>
-            <div class="gs-player">あなた（たろう）</div>
-            <div class="gs-whose other"><span class="js-whose">他者の手番・はなこ</span></div>
-          </div>
-          <div class="gs-rank">順位 2位</div>
-        </div>
-        <div class="gs-stats">
-          <div class="gs-stat"><span class="gs-k">仕事力</span><span class="gs-v js-score">6</span></div>
-          <div class="gs-stat"><span class="gs-k">従業員</span><span class="gs-v js-emp">2</span></div>
-          <div class="gs-stat"><span class="gs-k">コイン</span><span class="gs-v js-coin">5</span></div>
-        </div>
-        <div class="gs-links">
-          <a href="#s-list-solutions" class="js-link-sol">施策一覧</a>
-          <a href="#s-list-employees" class="js-link-emp">従業員一覧</a>
-        </div>
-      </div>
-    </section>
-
-
-      <!-- ========== 一覧（ステータスから） ========== -->
-      <section class="screen" id="s-list-solutions" data-title="20 施策（ソリューション）一覧" data-play="1" data-turn="1 / 5" data-whose="（参照中）" data-mine="0" data-score="6" data-emp="2" data-coin="7">
-
-        <div class="hdr" style="justify-content:space-between;gap:8px">
-          <a class="back" href="#s-solution-draw" id="back-from-sol">戻る</a>
-          <h1>施策一覧</h1>
-        <span class="hdr-turn">ターン 1/5</span></div>
-        <div class="body">
-          <p class="wf-id">WF-20 / 自社の実施済ソリューション（蓄積）</p>
-
-          <div class="ai-box">
-            <div class="ai-label">［AI要約］いまの組織の特徴</div>
-            <p style="margin:0;font-size:13px">くらし・フェア寄り。離職防止が厚く、採用枠のカバーも確保されている。キャリア施策は少なめ。</p>
-            <p class="note" style="margin:6px 0 0">実施済施策からAIが要約（仮コピー）。</p>
-          </div>
-
-          <p class="label">実施済み施策</p>
-          <div class="list">
-            <div class="item" style="align-items:flex-start;flex-direction:column;gap:4px">
-              <div class="row between" style="width:100%">
-                <span><strong>SOL-012</strong> フレックス勤務</span>
-                <span class="chip">T1・+2</span>
-              </div>
-              <div class="ico-row">
-                <span class="ico">くらし</span>
-                <span class="ico">フェア</span>
-                <span class="ico fx">採用</span>
-                <span class="ico fx">離職防止</span>
-              </div>
-            </div>
-            <div class="item" style="align-items:flex-start;flex-direction:column;gap:4px">
-              <div class="row between" style="width:100%">
-                <span><strong>SOL-004</strong> メンター制度</span>
-                <span class="chip">T1・+1</span>
-              </div>
-              <div class="ico-row">
-                <span class="ico">キャリア</span>
-                <span class="ico fx">昇進</span>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="foot">
-          <a class="btn primary block grow" href="#s-solution-draw" id="foot-back-sol">元の画面へ戻る</a>
-        </div>
-        <div class="game-status" data-injected="1">
-                  <div class="gs-top">
-          <div>
-            <div class="gs-player">あなた（たろう）</div>
-            <div class="gs-whose other"><span class="js-whose">（参照中）</span></div>
-          </div>
-          <div class="gs-rank">順位 2位</div>
-        </div>
           <div class="gs-stats">
-            <div class="gs-stat"><span class="gs-k">仕事力</span><span class="gs-v js-score">6</span></div>
-            <div class="gs-stat"><span class="gs-k">従業員</span><span class="gs-v js-emp">2</span></div>
-            <div class="gs-stat"><span class="gs-k">コイン</span><span class="gs-v js-coin">7</span></div>
+            <div class="gs-stat"><span class="gs-k">仕事力</span><span class="gs-v">4</span></div>
+            <div class="gs-stat"><span class="gs-k">従業員</span><span class="gs-v">2</span></div>
+            <div class="gs-stat"><span class="gs-k">コイン</span><span class="gs-v">8</span></div>
           </div>
           <div class="gs-links">
-            <a href="#s-list-solutions" class="js-link-sol">施策一覧</a>
-            <a href="#s-list-employees" class="js-link-emp">従業員一覧</a>
+            <a class="btn-link" href="#s-list-solutions">ソリューション一覧</a>
+            <a class="btn-link" href="#s-list-employees">従業員一覧</a>
           </div>
-        </div>
-    </section>
-
-      <section class="screen" id="s-list-employees" data-title="21 従業員一覧" data-play="1" data-turn="1 / 5" data-whose="（参照中）" data-mine="0" data-score="6" data-emp="2" data-coin="7">
-
-        <div class="hdr" style="justify-content:space-between;gap:8px">
-          <a class="back" href="#s-hire-select" id="back-from-emp">戻る</a>
-          <h1>従業員一覧</h1>
-        <span class="hdr-turn">ターン 1/5</span></div>
-        <div class="body">
-          <p class="wf-id">WF-21 / 自社の組織・従業員</p>
-
-          <div class="ai-box">
-            <div class="ai-label">［AI要約］従業員・組織の傾向</div>
-            <ul style="margin:6px 0 0;padding-left:1.2em;font-size:13px">
-              <li><strong>活躍しやすい:</strong> くらし・フェア属性。施策カバーが厚く仕事力も伸びやすい。</li>
-              <li><strong>退職しやすい:</strong> キャリア属性。離職防止のカバーが薄く、守りが手薄。</li>
-              <li><strong>次の一手:</strong> キャリア向けの離職防止施策を足すか、昇進カバーを整えてマネージャー枠を増やす。</li>
-            </ul>
-            <p class="note" style="margin:6px 0 0">組織・施策の状態からAIが要約（仮コピー）。</p>
-          </div>
-
-<div class="org-tree">
-            <div class="org-node">
-              <div class="org-head">
-                <div>
-                  <div class="org-name">社長</div>
-                  <div class="org-role">社長 ・ 2/3</div>
-                </div>
-                <div class="wp"><strong>5</strong>（元・3）</div>
-              </div>
-              <div class="ico-row">
-                <span class="ico">フェア</span>
-              </div>
-            </div>
-
-            <div class="org-children">
-              <div class="org-node">
-                <div class="org-head">
-                  <div>
-                    <div class="org-name">従業員A</div>
-                  </div>
-                  <div class="wp"><strong>4</strong>（元・2）</div>
-                </div>
-                <div class="ico-row">
-                  <span class="ico">くらし</span>
-                </div>
-              </div>
-              <div class="org-node">
-                <div class="org-head">
-                  <div>
-                    <div class="org-name">従業員B</div>
-                  </div>
-                  <div class="wp"><strong>3</strong>（元・2）</div>
-                </div>
-                <div class="ico-row">
-                  <span class="ico">キャリア</span>
-                </div>
-              </div>
-            </div>
-            <div class="org-slot">□</div>
-          </div>
-        </div>
-        <div class="foot">
-          <a class="btn primary block grow" href="#s-hire-select" id="foot-back-emp">元の画面へ戻る</a>
-        </div>
-        <div class="game-status" data-injected="1">
-                  <div class="gs-top">
-          <div>
-            <div class="gs-player">あなた（たろう）</div>
-            <div class="gs-whose other"><span class="js-whose">（参照中）</span></div>
-          </div>
-          <div class="gs-rank">順位 2位</div>
-        </div>
-          <div class="gs-stats">
-            <div class="gs-stat"><span class="gs-k">仕事力</span><span class="gs-v js-score">6</span></div>
-            <div class="gs-stat"><span class="gs-k">従業員</span><span class="gs-v js-emp">2</span></div>
-            <div class="gs-stat"><span class="gs-k">コイン</span><span class="gs-v js-coin">7</span></div>
-          </div>
-          <div class="gs-links">
-            <a href="#s-list-solutions" class="js-link-sol">施策一覧</a>
-            <a href="#s-list-employees" class="js-link-emp">従業員一覧</a>
-          </div>
-        </div>
-    </section>
-
-      <!-- ========== 終了 ========== -->
-      <section class="screen" id="s-end" data-title="22 終了：スコア・勝敗">
-        <div class="hdr"><h1>ゲーム終了</h1></div>
-        <div class="body">
-          <p class="wf-id">WF-22 / F-18</p>
-
-          <div class="end-hero">
-            <div class="face">(^_^)</div>
-            <div class="rank">1位</div>
-            <div class="name">たろう</div>
-            <div class="big-stats">
-              <div class="big-stat"><span class="k">仕事力</span><span class="v">14</span></div>
-              <div class="big-stat"><span class="k">コイン</span><span class="v">24</span></div>
-              <div class="big-stat"><span class="k">従業員</span><span class="v">5</span></div>
-            </div>
-          </div>
-
-          <p class="label">ランキング</p>
-          <div class="list rank-list">
-            <div class="item">
-              <span class="face">(・_・)</span>
-              <span class="who">
-                <div class="nm">2位 はなこ</div>
-              </span>
-              <span class="nums">仕事力 <strong>11</strong><br />コイン <strong>18</strong><br />従業員 <strong>3</strong></span>
-            </div>
-            <div class="item">
-              <span class="face">(・_・)</span>
-              <span class="who">
-                <div class="nm">3位 じろう</div>
-              </span>
-              <span class="nums">仕事力 <strong>9</strong><br />コイン <strong>11</strong><br />従業員 <strong>2</strong></span>
-            </div>
-            <div class="item bust">
-              <span class="face">(;_;)</span>
-              <span class="who">
-                <div class="nm">さぶろう</div>
-                <div class="sub">倒産（強制負け）</div>
-              </span>
-              <span class="nums">仕事力 <strong>6</strong><br />コイン <strong>-3</strong><br />従業員 <strong>1</strong></span>
-            </div>
-          </div>
-        </div>
-        <div class="foot">
-          <a class="btn primary block grow" href="#s-home">トップへ</a>
         </div>
       </section>
 
-      <!-- ========== Admin ========== -->
-      <section class="screen" id="s-admin-login" data-title="24 Admin：ログイン">
+      <!-- P-08 退職結果（退職） -->
+      <section class="screen" id="s-retire-result" data-title="P-08 退職：結果（退職）" data-play="1">
+        <div class="hdr hdr-phase">
+          <div class="phase-crumb"><span class="pc">給与</span><span class="sep">＞</span><span class="pc on">退職</span><span class="sep">＞</span><span class="pc">ソリューション</span><span class="sep">＞</span><span class="pc">採用</span></div>
+          <span class="hdr-turn">ターン 1/5</span>
+        </div>
+        <div class="body">
+          <p class="wf-id">P-08 / F-08 · 結果アニメあり（UIモック）</p>
+          <div class="result-box ng">
+            <div class="big">退職</div>
+            <div class="sub">リーが去っていきました</div>
+          </div>
+          <div class="emp-card">
+            <div class="emp-with-illus">
+              <div class="emp-illus-wrap">
+                <svg class="cand-illus" viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+  <rect width="80" height="80" rx="12" fill="#e8e8e8"/>
+  <circle cx="40" cy="30" r="14" fill="#bbb"/>
+  <ellipse cx="40" cy="62" rx="22" ry="16" fill="#bbb"/>
+</svg>
+                <div class="risk-label">退職した従業員</div>
+              </div>
+              <div style="flex:1">
+                <div class="emp-head">
+                  <div>
+                    <div class="emp-label">去った従業員</div>
+                    <div class="emp-name">リー</div>
+                  </div>
+                  <div class="wp"><strong>仕事力 −5</strong></div>
+                </div>
+                <div class="ico-row"><span class="ico">グローバル</span></div>
+              </div>
+            </div>
+          </div>
+          <div class="box">
+            <div class="label">判定</div>
+            <div>出目 <strong>3（奇数）</strong>。離職防止なし → 退職。</div>
+          </div>
+        </div>
+        <div class="foot">
+          <a class="btn primary block grow" href="#s-solution-draw">次へ（ソリューション）</a>
+        </div>
+        <div class="game-status">
+          <div class="gs-top">
+            <div>
+              <div class="gs-player">あなた（たろう）</div>
+              <div class="gs-whose mine">自分の手番・たろう</div>
+            </div>
+            <div class="gs-rank">順位 2位</div>
+          </div>
+          <div class="gs-stats">
+            <div class="gs-stat"><span class="gs-k">仕事力</span><span class="gs-v">4</span></div>
+            <div class="gs-stat"><span class="gs-k">従業員</span><span class="gs-v">1</span></div>
+            <div class="gs-stat"><span class="gs-k">コイン</span><span class="gs-v">8</span></div>
+          </div>
+          <div class="gs-links">
+            <a class="btn-link" href="#s-list-solutions">ソリューション一覧</a>
+            <a class="btn-link" href="#s-list-employees">従業員一覧</a>
+          </div>
+        </div>
+      </section>
+
+      <!-- P-09 退職結果（残留） -->
+      <section class="screen" id="s-retire-prevented" data-title="P-09 退職：結果（残留）" data-play="1">
+        <div class="hdr hdr-phase">
+          <div class="phase-crumb"><span class="pc">給与</span><span class="sep">＞</span><span class="pc on">退職</span><span class="sep">＞</span><span class="pc">ソリューション</span><span class="sep">＞</span><span class="pc">採用</span></div>
+          <span class="hdr-turn">ターン 1/5</span>
+        </div>
+        <div class="body">
+          <p class="wf-id">P-09 / F-08 · 結果アニメあり（UIモック）</p>
+          <div class="result-box">
+            <div class="big">残留</div>
+            <div class="sub">佐藤は離職防止で踏みとどまった</div>
+          </div>
+          <div class="emp-card">
+            <div class="emp-with-illus">
+              <div class="emp-illus-wrap">
+                <svg class="cand-illus" viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+  <rect width="80" height="80" rx="12" fill="#e8e8e8"/>
+  <circle cx="40" cy="30" r="14" fill="#bbb"/>
+  <ellipse cx="40" cy="62" rx="22" ry="16" fill="#bbb"/>
+</svg>
+                <div class="risk-label">退職リスク対象</div>
+              </div>
+              <div style="flex:1">
+                <div class="emp-head">
+                  <div>
+                    <div class="emp-label">判定対象</div>
+                    <div class="emp-name">佐藤</div>
+                  </div>
+                  <div class="wp"><strong>仕事力 4</strong></div>
+                </div>
+                <div class="ico-row"><span class="ico">くらし</span></div>
+              </div>
+            </div>
+          </div>
+          <div class="box">
+            <div class="label">判定</div>
+            <div>出目は <strong>5（奇数）</strong> だが、離職防止（くらし）により残留。守りが優先。</div>
+          </div>
+          <div class="box muted">
+            <div class="row between"><span>離職防止</span><strong>あり（蓄積）</strong></div>
+          </div>
+        </div>
+        <div class="foot">
+          <a class="btn primary block grow" href="#s-solution-draw">次へ</a>
+        </div>
+        <div class="game-status">
+          <div class="gs-top">
+            <div>
+              <div class="gs-player">あなた（たろう）</div>
+              <div class="gs-whose mine">自分の手番・たろう</div>
+            </div>
+            <div class="gs-rank">順位 2位</div>
+          </div>
+          <div class="gs-stats">
+            <div class="gs-stat"><span class="gs-k">仕事力</span><span class="gs-v">4</span></div>
+            <div class="gs-stat"><span class="gs-k">従業員</span><span class="gs-v">2</span></div>
+            <div class="gs-stat"><span class="gs-k">コイン</span><span class="gs-v">8</span></div>
+          </div>
+          <div class="gs-links">
+            <a class="btn-link" href="#s-list-solutions">ソリューション一覧</a>
+            <a class="btn-link" href="#s-list-employees">従業員一覧</a>
+          </div>
+        </div>
+      </section>
+
+      <!-- P-10 ソリューション読取 -->
+      <section class="screen" id="s-solution-draw" data-title="P-10 ソリューション：カード読取" data-play="1">
+        <div class="hdr hdr-phase">
+          <div class="phase-crumb"><span class="pc">給与</span><span class="sep">＞</span><span class="pc">退職</span><span class="sep">＞</span><span class="pc on">ソリューション</span><span class="sep">＞</span><span class="pc">採用</span></div>
+          <span class="hdr-turn">ターン 1/5</span>
+        </div>
+        <div class="body">
+          <p class="wf-id">P-10 / F-09, F-10</p>
+          <div class="box muted">
+            <div class="row between"><span>コスト</span><strong>1枚 = 1コイン</strong></div>
+          </div>
+          <div class="placeholder tall">［プレースホルダ］カメラ読取<br />カードQR</div>
+          <p class="note">手入力はしません。物理カードのQRを読み取ります。</p>
+        </div>
+        <div class="foot">
+          <a class="btn outline grow" href="#s-hire-select" style="border:2px solid #222;background:#fff;color:#222">完了</a>
+          <a class="btn primary grow" href="#s-solution-detail" style="border:1px solid #222">読取へ</a>
+        </div>
+        <div class="game-status">
+          <div class="gs-top">
+            <div>
+              <div class="gs-player">あなた（たろう）</div>
+              <div class="gs-whose mine">自分の手番・たろう</div>
+            </div>
+            <div class="gs-rank">順位 2位</div>
+          </div>
+          <div class="gs-stats">
+            <div class="gs-stat"><span class="gs-k">仕事力</span><span class="gs-v">4</span></div>
+            <div class="gs-stat"><span class="gs-k">従業員</span><span class="gs-v">1</span></div>
+            <div class="gs-stat"><span class="gs-k">コイン</span><span class="gs-v">8</span></div>
+          </div>
+          <div class="gs-links">
+            <a class="btn-link" href="#s-list-solutions">ソリューション一覧</a>
+            <a class="btn-link" href="#s-list-employees">従業員一覧</a>
+          </div>
+        </div>
+      </section>
+
+
+      <!-- P-11 ソリューション詳細（カード面・決定で同一画面に効果反映） -->
+      <section class="screen" id="s-solution-detail" data-title="P-11 ソリューション：詳細" data-play="1" data-solution-state="detail">
+        <div class="hdr hdr-phase">
+          <div class="phase-crumb"><span class="pc">給与</span><span class="sep">＞</span><span class="pc">退職</span><span class="sep">＞</span><span class="pc on">ソリューション</span><span class="sep">＞</span><span class="pc">採用</span></div>
+          <span class="hdr-turn">ターン 1/5</span>
+        </div>
+        <div class="body">
+          <p class="wf-id">P-11 / F-09, F-10, F-11 · 決定後は同一画面で効果反映</p>
+          <div class="phys-card-wrap">
+            <article class="phys-card" aria-label="ソリューションカード面：リモートワーク制度">
+              <div class="pc-band">
+                <span class="pc-kind">SOLUTION</span>
+                <span class="pc-wp">仕事力 +2</span>
+              </div>
+              <div class="pc-title">リモートワーク制度</div>
+              <div class="pc-art">
+                <svg viewBox="0 0 120 80" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                  <rect x="8" y="28" width="48" height="36" rx="2" fill="none" stroke="#444" stroke-width="2"/>
+                  <rect x="14" y="34" width="36" height="20" fill="#ccc"/>
+                  <rect x="64" y="18" width="44" height="46" rx="2" fill="none" stroke="#444" stroke-width="2"/>
+                  <circle cx="86" cy="36" r="8" fill="#bbb"/>
+                  <ellipse cx="86" cy="56" rx="14" ry="8" fill="#bbb"/>
+                  <line x1="56" y1="46" x2="64" y2="46" stroke="#444" stroke-width="2"/>
+                </svg>
+                <span class="pc-art-label">［カードイラスト］</span>
+              </div>
+              <div class="pc-body">
+                <div>
+                  <div class="pc-row-label">属性</div>
+                  <div class="ico-row">
+                    <span class="ico">くらし</span>
+                    <span class="ico">キャリア</span>
+                  </div>
+                </div>
+                <div>
+                  <div class="pc-row-label">効果</div>
+                  <div class="ico-row">
+                    <span class="ico fx">採用</span>
+                    <span class="ico fx">離職防止</span>
+                  </div>
+                </div>
+              </div>
+            </article>
+          </div>
+          <div class="solution-state" data-solution-view="applied" hidden>
+            <div class="num-row sol-effect-wp" style="margin-top:12px">
+              <span class="label">仕事力の変化</span>
+              <span class="v">4 → 6（+2）</span>
+            </div>
+            <div class="box muted sol-effect-coin">
+              <div class="row between"><span>コイン消費</span><strong>−1</strong></div>
+              <div class="row between"><span>残高</span><strong>7</strong></div>
+            </div>
+          </div>
+        </div>
+        <div class="foot solution-state" data-solution-view="detail">
+          <a class="btn outline grow" href="#s-solution-draw" style="border:2px solid #222;background:#fff;color:#222">戻る</a>
+          <button type="button" class="btn primary grow" id="solutionDecideBtn">決定</button>
+        </div>
+        <div class="foot solution-state" data-solution-view="applied" hidden>
+          <a class="btn primary block grow" href="#s-solution-extra">次へ</a>
+        </div>
+        <div class="game-status" id="solutionGameStatus">
+          <div class="gs-top">
+            <div>
+              <div class="gs-player">あなた（たろう）</div>
+              <div class="gs-whose mine">自分の手番・たろう</div>
+            </div>
+            <div class="gs-rank">順位 2位</div>
+          </div>
+          <div class="gs-stats">
+            <div class="gs-stat"><span class="gs-k">仕事力</span><span class="gs-v" id="solutionScoreStat">4</span></div>
+            <div class="gs-stat"><span class="gs-k">従業員</span><span class="gs-v">1</span></div>
+            <div class="gs-stat"><span class="gs-k">コイン</span><span class="gs-v" id="solutionCoinStat">8</span></div>
+          </div>
+          <div class="gs-links">
+            <a class="btn-link" href="#s-list-solutions">ソリューション一覧</a>
+            <a class="btn-link" href="#s-list-employees">従業員一覧</a>
+          </div>
+        </div>
+      </section>
+
+      <!-- P-12 ソリューション追加 -->
+      <section class="screen" id="s-solution-extra" data-title="P-12 ソリューション：追加で引くか" data-play="1">
+        <div class="hdr hdr-phase">
+          <div class="phase-crumb"><span class="pc">給与</span><span class="sep">＞</span><span class="pc">退職</span><span class="sep">＞</span><span class="pc on">ソリューション</span><span class="sep">＞</span><span class="pc">採用</span></div>
+          <span class="hdr-turn">ターン 1/5</span>
+        </div>
+        <div class="body">
+          <p class="wf-id">P-12 / F-10</p>
+          <div class="box muted" style="text-align:center;padding:20px 12px">
+            <p class="title-lg" style="margin:0">一巡が終わりました</p>
+            <p class="note">追加でソリューションカードを引きますか？</p>
+          </div>
+          <div class="box">
+            <div class="row between"><span>残高</span><strong>7 コイン</strong></div>
+            <div class="row between"><span>追加コスト</span><strong>1枚 = 1コイン</strong></div>
+          </div>
+        </div>
+        <div class="foot">
+          <a class="btn outline grow" href="#s-hire-select" style="border:2px solid #222;background:#fff;color:#222">引かない</a>
+          <a class="btn primary grow" href="#s-solution-draw">追加で引く</a>
+        </div>
+        <div class="game-status">
+          <div class="gs-top">
+            <div>
+              <div class="gs-player">あなた（たろう）</div>
+              <div class="gs-whose mine">自分の手番・たろう</div>
+            </div>
+            <div class="gs-rank">順位 2位</div>
+          </div>
+          <div class="gs-stats">
+            <div class="gs-stat"><span class="gs-k">仕事力</span><span class="gs-v">6</span></div>
+            <div class="gs-stat"><span class="gs-k">従業員</span><span class="gs-v">1</span></div>
+            <div class="gs-stat"><span class="gs-k">コイン</span><span class="gs-v">7</span></div>
+          </div>
+          <div class="gs-links">
+            <a class="btn-link" href="#s-list-solutions">ソリューション一覧</a>
+            <a class="btn-link" href="#s-list-employees">従業員一覧</a>
+          </div>
+        </div>
+      </section>
+
+      <!-- P-13 採用読取 -->
+      <section class="screen" id="s-hire-select" data-title="P-13 採用：カード読取" data-play="1">
+        <div class="hdr hdr-phase">
+          <div class="phase-crumb"><span class="pc">給与</span><span class="sep">＞</span><span class="pc">退職</span><span class="sep">＞</span><span class="pc">ソリューション</span><span class="sep">＞</span><span class="pc on">採用</span></div>
+          <span class="hdr-turn">ターン 1/5</span>
+        </div>
+        <div class="body">
+          <p class="wf-id">P-13 / F-09, F-12</p>
+          <div class="box muted">
+            <div class="row between"><span>コスト</span><strong>1人 = 1コイン</strong></div>
+          </div>
+          <div class="placeholder tall">［プレースホルダ］カメラ読取<br />採用カードQR → シードマスタ</div>
+          <p class="note">条件を満たせば採用できます。満たさなければ採用できません（コインは消費）。バッティングはプロトタイプ対象外です。</p>
+        </div>
+        <div class="foot">
+          <a class="btn outline grow" href="#s-done-skip" style="border:2px solid #222;background:#fff;color:#222">完了</a>
+          <a class="btn primary grow" href="#s-hire-detail" style="border:1px solid #222">読取へ</a>
+        </div>
+        <div class="game-status">
+          <div class="gs-top">
+            <div>
+              <div class="gs-player">あなた（たろう）</div>
+              <div class="gs-whose mine">自分の手番・たろう</div>
+            </div>
+            <div class="gs-rank">順位 2位</div>
+          </div>
+          <div class="gs-stats">
+            <div class="gs-stat"><span class="gs-k">仕事力</span><span class="gs-v">6</span></div>
+            <div class="gs-stat"><span class="gs-k">従業員</span><span class="gs-v">1</span></div>
+            <div class="gs-stat"><span class="gs-k">コイン</span><span class="gs-v">7</span></div>
+          </div>
+          <div class="gs-links">
+            <a class="btn-link" href="#s-list-solutions">ソリューション一覧</a>
+            <a class="btn-link" href="#s-list-employees">従業員一覧</a>
+          </div>
+        </div>
+      </section>
+
+      <!-- P-15 採用成功 -->
+
+      <!-- P-14 採用：候補詳細（読取後・合格通知前）— 物理採用カード面をそのまま表示 -->
+      <section class="screen" id="s-hire-detail" data-title="P-14 採用：候補詳細" data-play="1">
+        <div class="hdr hdr-phase">
+          <div class="phase-crumb"><span class="pc">給与</span><span class="sep">＞</span><span class="pc">退職</span><span class="sep">＞</span><span class="pc">ソリューション</span><span class="sep">＞</span><span class="pc on">採用</span></div>
+          <span class="hdr-turn">ターン 1/5</span>
+        </div>
+        <div class="body">
+          <p class="wf-id">P-14 / F-09, F-12</p>
+          <div class="phys-card-wrap">
+            <article class="phys-card hire" aria-label="採用カード面：キム">
+              <div class="pc-band">
+                <span class="pc-kind">HIRE</span>
+                <span class="pc-wp">仕事力 3</span>
+              </div>
+              <div class="pc-name">キム</div>
+              <div class="pc-art">
+                <svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                  <rect width="80" height="80" fill="#d8d8d8"/>
+                  <circle cx="40" cy="30" r="14" fill="#999"/>
+                  <ellipse cx="40" cy="62" rx="22" ry="16" fill="#999"/>
+                </svg>
+                <span class="pc-art-label">［候補イラスト］</span>
+              </div>
+              <div class="pc-body">
+                <div>
+                  <div class="pc-row-label">属性</div>
+                  <div class="ico-row">
+                    <span class="ico">くらし</span>
+                    <span class="ico">キャリア</span>
+                  </div>
+                </div>
+                <div>
+                  <div class="pc-row-label">志望動機・経歴</div>
+                  <div class="pc-text">リモートとキャリア成長の両立を重視。前職ではチーム運営を経験。</div>
+                </div>
+              </div>
+            </article>
+          </div>
+        </div>
+        <div class="foot">
+          <a class="btn outline grow" href="#s-hire-select" style="border:2px solid #222;background:#fff;color:#222">考え直す</a>
+          <a class="btn primary grow" href="#s-hire-result-ok">合格通知を出す</a>
+        </div>
+        <div class="game-status">
+          <div class="gs-top">
+            <div>
+              <div class="gs-player">あなた（たろう）</div>
+              <div class="gs-whose mine">自分の手番・たろう</div>
+            </div>
+            <div class="gs-rank">順位 2位</div>
+          </div>
+          <div class="gs-stats">
+            <div class="gs-stat"><span class="gs-k">仕事力</span><span class="gs-v">6</span></div>
+            <div class="gs-stat"><span class="gs-k">従業員</span><span class="gs-v">1</span></div>
+            <div class="gs-stat"><span class="gs-k">コイン</span><span class="gs-v">7</span></div>
+          </div>
+          <div class="gs-links">
+            <a class="btn-link" href="#s-list-solutions">ソリューション一覧</a>
+            <a class="btn-link" href="#s-list-employees">従業員一覧</a>
+          </div>
+        </div>
+      </section>
+
+      <section class="screen" id="s-hire-result-ok" data-title="P-15 採用：成功" data-play="1">
+        <div class="hdr hdr-phase">
+          <div class="phase-crumb"><span class="pc">給与</span><span class="sep">＞</span><span class="pc">退職</span><span class="sep">＞</span><span class="pc">ソリューション</span><span class="sep">＞</span><span class="pc on">採用</span></div>
+          <span class="hdr-turn">ターン 1/5</span>
+        </div>
+        <div class="body">
+          <p class="wf-id">P-15 / F-12 · 結果アニメあり（UIモック）</p>
+          <div class="result-box">
+            <div class="big">採用できた</div>
+            <div class="sub">条件を満たしています</div>
+          </div>
+          <div class="emp-card">
+            <div class="emp-head">
+              <div>
+                <div class="emp-label">採用した従業員</div>
+                <div class="emp-name">キム</div>
+              </div>
+              <div class="wp"><strong>仕事力 3</strong></div>
+            </div>
+            <div class="ico-row">
+              <span class="ico">くらし</span>
+              <span class="ico">キャリア</span>
+            </div>
+          </div>
+          <div class="box muted">
+            <div class="row between"><span>コイン消費</span><strong>−1</strong></div>
+            <div class="row between"><span>従業員</span><strong>1 → 2</strong></div>
+            <div class="row between"><span>仕事力</span><strong>6 → 9</strong></div>
+          </div>
+        </div>
+        <div class="foot">
+          <a class="btn outline grow" href="#s-hire-select" style="border:2px solid #222;background:#fff;color:#222">続けて採用</a>
+          <a class="btn primary grow" href="#s-done-skip">done</a>
+        </div>
+        <div class="game-status">
+          <div class="gs-top">
+            <div>
+              <div class="gs-player">あなた（たろう）</div>
+              <div class="gs-whose mine">自分の手番・たろう</div>
+            </div>
+            <div class="gs-rank">順位 1位</div>
+          </div>
+          <div class="gs-stats">
+            <div class="gs-stat"><span class="gs-k">仕事力</span><span class="gs-v">9</span></div>
+            <div class="gs-stat"><span class="gs-k">従業員</span><span class="gs-v">2</span></div>
+            <div class="gs-stat"><span class="gs-k">コイン</span><span class="gs-v">6</span></div>
+          </div>
+          <div class="gs-links">
+            <a class="btn-link" href="#s-list-solutions">ソリューション一覧</a>
+            <a class="btn-link" href="#s-list-employees">従業員一覧</a>
+          </div>
+        </div>
+      </section>
+
+      <!-- P-16 採用失敗 -->
+      <section class="screen" id="s-hire-result-ng" data-title="P-16 採用：できない" data-play="1">
+        <div class="hdr hdr-phase">
+          <div class="phase-crumb"><span class="pc">給与</span><span class="sep">＞</span><span class="pc">退職</span><span class="sep">＞</span><span class="pc">ソリューション</span><span class="sep">＞</span><span class="pc on">採用</span></div>
+          <span class="hdr-turn">ターン 1/5</span>
+        </div>
+        <div class="body">
+          <p class="wf-id">P-16 / F-12 · 結果アニメあり（UIモック）</p>
+          <div class="result-box ng">
+            <div class="big">採用できない</div>
+            <div class="sub">属性カバーが不足しています</div>
+          </div>
+          <div class="emp-card">
+            <div class="emp-head">
+              <div>
+                <div class="emp-label">候補</div>
+                <div class="emp-name">ワン</div>
+              </div>
+              <div class="wp"><strong>仕事力 4</strong></div>
+            </div>
+            <div class="ico-row">
+              <span class="ico">グローバル</span>
+              <span class="ico">フェア</span>
+            </div>
+          </div>
+          <div class="box">
+            <div class="label">判定</div>
+            <div>必要な【採用】ソリューションが未実施。コイン <strong>−1</strong> は消費されます。</div>
+          </div>
+        </div>
+        <div class="foot">
+          <a class="btn outline grow" href="#s-hire-select" style="border:2px solid #222;background:#fff;color:#222">別の候補を読む</a>
+          <a class="btn primary grow" href="#s-done-skip">done</a>
+        </div>
+        <div class="game-status">
+          <div class="gs-top">
+            <div>
+              <div class="gs-player">あなた（たろう）</div>
+              <div class="gs-whose mine">自分の手番・たろう</div>
+            </div>
+            <div class="gs-rank">順位 2位</div>
+          </div>
+          <div class="gs-stats">
+            <div class="gs-stat"><span class="gs-k">仕事力</span><span class="gs-v">6</span></div>
+            <div class="gs-stat"><span class="gs-k">従業員</span><span class="gs-v">1</span></div>
+            <div class="gs-stat"><span class="gs-k">コイン</span><span class="gs-v">6</span></div>
+          </div>
+          <div class="gs-links">
+            <a class="btn-link" href="#s-list-solutions">ソリューション一覧</a>
+            <a class="btn-link" href="#s-list-employees">従業員一覧</a>
+          </div>
+        </div>
+      </section>
+
+      <!-- P-17 手番完了 -->
+      <section class="screen" id="s-done-skip" data-title="P-17 手番完了／他者待ち" data-play="1">
+        <div class="hdr hdr-phase">
+          <div class="phase-crumb"><span class="pc">給与</span><span class="sep">＞</span><span class="pc">退職</span><span class="sep">＞</span><span class="pc">ソリューション</span><span class="sep">＞</span><span class="pc on">採用</span></div>
+          <span class="hdr-turn">ターン 1/5</span>
+        </div>
+        <div class="body">
+          <p class="wf-id">P-17 / F-16</p>
+          <div class="box muted" style="text-align:center;padding:28px 12px">
+            <p class="title-lg" style="margin:0"><span class="poll-dot"></span>他の参加者の手番です</p>
+            <p class="note">いま：はなこ（採用）</p>
+          </div>
+          <div class="box">
+            <div class="label">手番順</div>
+            <div>たろう（済）→ <strong>はなこ</strong> → じろう</div>
+          </div>
+          <p class="note">全員の採用が一巡すると、次ターンの給与へ進みます。最終ターン終了後は結果画面へ。</p>
+        </div>
+        <div class="game-status">
+          <div class="gs-top">
+            <div>
+              <div class="gs-player">あなた（たろう）</div>
+              <div class="gs-whose other">他者の手番・はなこ</div>
+            </div>
+            <div class="gs-rank">順位 1位</div>
+          </div>
+          <div class="gs-stats">
+            <div class="gs-stat"><span class="gs-k">仕事力</span><span class="gs-v">9</span></div>
+            <div class="gs-stat"><span class="gs-k">従業員</span><span class="gs-v">2</span></div>
+            <div class="gs-stat"><span class="gs-k">コイン</span><span class="gs-v">6</span></div>
+          </div>
+          <div class="gs-links">
+            <a class="btn-link" href="#s-list-solutions">ソリューション一覧</a>
+            <a class="btn-link" href="#s-list-employees">従業員一覧</a>
+          </div>
+        </div>
+      </section>
+
+      <!-- P-18 ソリューション一覧 -->
+      <section class="screen" id="s-list-solutions" data-title="P-18 ソリューション一覧">
+        <div class="hdr">
+          <a class="back" id="back-from-sol" href="#s-turn-salary">戻る</a>
+          <h1>ソリューション一覧</h1>
+        </div>
+        <div class="body">
+          <p class="wf-id">P-18 / F-11（参照）</p>
+          <div class="list">
+            <div class="item">
+              <div>
+                <strong>リモートワーク制度</strong>
+                <div class="ico-row">
+                  <span class="ico">くらし</span>
+                  <span class="ico">キャリア</span>
+                  <span class="ico fx">採用</span>
+                  <span class="ico fx">離職防止</span>
+                </div>
+              </div>
+              <span class="chip">仕事力 +2</span>
+            </div>
+            <div class="item">
+              <div>
+                <strong>（未実施の例）</strong>
+                <div class="note">蓄積型：過去ターンで実施済みなら有効</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="foot">
+          <a class="btn primary block grow" id="foot-back-sol" href="#s-turn-salary">戻る</a>
+        </div>
+      </section>
+
+      <!-- P-19 従業員一覧 -->
+      <section class="screen" id="s-list-employees" data-title="P-19 従業員一覧">
+        <div class="hdr">
+          <a class="back" id="back-from-emp" href="#s-turn-salary">戻る</a>
+          <h1>従業員一覧</h1>
+        </div>
+        <div class="body">
+          <p class="wf-id">P-19（参照）</p>
+          <div class="list">
+            <div class="item">
+              <div>
+                <strong>社長（あなた）</strong>
+                <div class="note">配下 2 名まで採用可</div>
+              </div>
+            </div>
+            <div class="item">
+              <div>
+                <strong>佐藤</strong>
+                <div class="ico-row"><span class="ico">くらし</span></div>
+              </div>
+              <span class="chip">仕事力 4</span>
+            </div>
+            <div class="item">
+              <div>
+                <strong>キム</strong>
+                <div class="ico-row"><span class="ico">くらし</span><span class="ico">キャリア</span></div>
+              </div>
+              <span class="chip">仕事力 3</span>
+            </div>
+          </div>
+        </div>
+        <div class="foot">
+          <a class="btn primary block grow" id="foot-back-emp" href="#s-turn-salary">戻る</a>
+        </div>
+      </section>
+
+      <!-- P-20 終了 -->
+      <section class="screen" id="s-end" data-title="P-20 終了（スコア・順位）">
+        <div class="hdr"><h1>ゲーム終了</h1></div>
+        <div class="body">
+          <p class="wf-id">P-20 / F-18</p>
+          <div class="end-hero">
+            <div class="rank">1位</div>
+            <div class="name">たろう</div>
+            <div class="big-stats">
+              <div class="big-stat"><span class="k">仕事力</span><span class="v">18</span></div>
+              <div class="big-stat"><span class="k">従業員</span><span class="v">4</span></div>
+              <div class="big-stat"><span class="k">コイン</span><span class="v">3</span></div>
+            </div>
+          </div>
+          <p class="label">ランキング（仕事力）</p>
+          <div class="list">
+            <div class="item"><span><strong>1. たろう</strong></span><strong>18</strong></div>
+            <div class="item"><span>2. はなこ</span><strong>15</strong></div>
+            <div class="item"><span>3. じろう</span><strong>11</strong></div>
+          </div>
+          <p class="note">設定ターン数終了。勝敗は仕事力スコアで簡略表示。</p>
+        </div>
+        <div class="foot">
+          <a class="btn primary block grow" href="#s-home">TOPへ</a>
+        </div>
+      </section>
+
+      <!-- P-21 admin ログイン -->
+      <section class="screen" id="s-admin-login" data-title="P-21 Admin：ログイン">
         <div class="hdr">
           <a class="back" href="#s-home">戻る</a>
           <h1>admin ログイン</h1>
         </div>
         <div class="body">
-          <p class="wf-id">WF-24 / 認証（F-20前）</p>
-          <p class="note">ファシリテーターのみ。ID・パスワード認証後にメニューへ。</p>
+          <p class="wf-id">P-21 / F-20</p>
           <label class="stack">
             <span class="label">ID</span>
             <input class="input" type="text" value="facilitator" readonly />
           </label>
           <label class="stack">
             <span class="label">パスワード</span>
-            <input class="input" type="password" value="********" readonly />
+            <input class="input" type="password" value="••••••••" readonly />
           </label>
-          <div class="err" style="display:none">IDまたはパスワードが違います（ワイヤーでは未使用）</div>
+          <p class="note">認証に成功しないとセッション作成へ進めません。</p>
         </div>
         <div class="foot">
-          <a class="btn primary block grow" href="#s-admin">ログイン</a>
+          <a class="btn primary block grow" href="#s-facil-create">ログイン</a>
         </div>
       </section>
 
-      <section class="screen" id="s-admin" data-title="25 Admin：メニュー">
+      <!-- P-22 セッション作成 -->
+      <section class="screen" id="s-facil-create" data-title="P-22 Admin：セッション作成">
         <div class="hdr">
-          <a class="back" href="#s-home">ログアウト</a>
-          <h1>ファシリ admin</h1>
+          <a class="back" href="#s-admin-login">戻る</a>
+          <h1>セッション作成</h1>
         </div>
         <div class="body">
-          <p class="wf-id">WF-25 / F-20〜22</p>
-          <p class="note">認証済み。参加者は admin 操作不可。セッション作成もここから。</p>
-          <a class="btn primary block" href="#s-admin-sessions">セッション一覧</a>
-          <a class="btn block" href="#s-admin-cards">カードマスタ</a>
-        </div>
-      </section>
-
-      <section class="screen" id="s-admin-sessions" data-title="26 Admin：セッション一覧">
-        <div class="hdr">
-          <a class="back" href="#s-admin">戻る</a>
-          <h1>セッション一覧</h1>
-        </div>
-        <div class="body">
-          <p class="wf-id">WF-26 / F-20</p>
-          <p class="note">各セッションのステータスを表示。行タップで詳細・操作へ。</p>
-          <a class="btn primary block" href="#s-facil-create">新規発行（作成）</a>
-          <div class="list">
-            <a class="item" href="#s-admin-session-detail" style="text-decoration:none;color:inherit">
-              <span>A7K2M9<br /><span class="note">参加者 3名</span></span>
-              <span class="chip">待機中</span>
-            </a>
-            <a class="item" href="#s-admin-session-detail-play" style="text-decoration:none;color:inherit">
-              <span>C9PX<br /><span class="note">参加者 4名 ・ T2</span></span>
-              <span class="chip">進行中</span>
-            </a>
-            <a class="item" href="#s-admin-session-detail-end" style="text-decoration:none;color:inherit">
-              <span>B3MQ<br /><span class="note">参加者 3名</span></span>
-              <span class="chip">終了</span>
-            </a>
+          <p class="wf-id">P-22 / F-01, F-20</p>
+          <p class="note">プロトタイプでは作成・発行のみ。一覧・停止・削除UIは作り込みません。</p>
+          <label class="stack">
+            <span class="label">終了ターン数</span>
+            <input class="input" type="number" value="5" min="1" max="5" readonly />
+          </label>
+          <div class="box muted">
+            <div class="label">作成者</div>
+            <div>ファシリテーター（adminログイン中）</div>
           </div>
         </div>
+        <div class="foot">
+          <a class="btn primary block grow" href="#s-facil-code">作成する</a>
+        </div>
       </section>
 
-      <section class="screen" id="s-admin-session-detail" data-title="27 Admin：セッション詳細（待機中）">
+      <!-- P-23 参加コード発行 -->
+      <section class="screen" id="s-facil-code" data-title="P-23 Admin：参加コード発行">
         <div class="hdr">
-          <a class="back" href="#s-admin-sessions">一覧</a>
-          <h1>セッション詳細</h1>
+          <a class="back" href="#s-facil-create">戻る</a>
+          <h1>参加コード</h1>
         </div>
         <div class="body">
-          <p class="wf-id">WF-27 / F-20, F-21</p>
-          <div class="box">
-            <div class="row between"><span>参加コード</span><strong>A7K2M9</strong></div>
-            <div class="row between"><span>ステータス</span><span class="chip">待機中</span></div>
+          <p class="wf-id">P-23 / F-01, F-03</p>
+          <div class="box" style="text-align:center">
+            <div class="label">参加コード</div>
+            <div class="title-lg" style="letter-spacing:0.2em">A7K2M9</div>
+            <p class="note">参加者へ口頭・紙で共有してください</p>
+          </div>
+          <div class="box muted">
             <div class="row between"><span>終了ターン</span><strong>5</strong></div>
-            <div class="row between"><span>参加人数</span><strong>3 / 6</strong></div>
+            <div class="row between"><span>参加人数</span><strong>3 / —</strong></div>
           </div>
-          <p class="label">参加者</p>
+          <p class="label">参加者一覧（同期）</p>
           <div class="list">
             <div class="item"><span>たろう</span><span class="chip">参加済</span></div>
             <div class="item"><span>はなこ</span><span class="chip">参加済</span></div>
             <div class="item"><span>じろう</span><span class="chip">参加済</span></div>
           </div>
-          <a class="btn primary block" href="#s-order">手番順を決めて開始</a>
-          <div class="box">
-            <div class="label">直前に操作した人</div>
-            <div><strong>たろう</strong></div>
-            <div class="label" style="margin-top:8px">直前の操作内容</div>
-            <div>参加（表示名入力）</div>
-            <p class="note">取消はセッション詳細からのみ。参加者自身は取消不可。</p>
-            <a class="btn block" href="#s-admin-session-detail" style="margin-top:8px">取り消す</a>
-          </div>
         </div>
         <div class="foot">
-          <a class="btn ghost grow" href="#s-admin-sessions">停止</a>
-          <a class="btn grow" href="#s-admin-sessions">削除</a>
+          <a class="btn primary block grow" href="#s-order">手番順を決める</a>
         </div>
       </section>
 
-      <section class="screen" id="s-admin-session-detail-play" data-title="28 Admin：セッション詳細（進行中）">
+      <!-- P-24 手番順 -->
+      <section class="screen" id="s-order" data-title="P-24 Admin：手番順の決定">
         <div class="hdr">
-          <a class="back" href="#s-admin-sessions">一覧</a>
-          <h1>セッション詳細</h1>
+          <a class="back" href="#s-facil-code">戻る</a>
+          <h1>手番順</h1>
         </div>
         <div class="body">
-          <p class="wf-id">WF-28 / F-20, F-21</p>
-          <div class="box">
-            <div class="row between"><span>参加コード</span><strong>C9PX</strong></div>
-            <div class="row between"><span>ステータス</span><span class="chip">進行中</span></div>
-            <div class="row between"><span>ターン</span><strong>2 / 5</strong></div>
-            <div class="row between"><span>フェーズ</span><strong>ソリューション</strong></div>
-            <div class="row between"><span>参加人数</span><strong>4 / 6</strong></div>
+          <p class="wf-id">P-24 / F-04</p>
+          <p class="note">退職・ソリューション・採用はこの順番で進みます。給与は一斉のため対象外です。</p>
+          <p class="label">向き</p>
+          <div class="split-2">
+            <button type="button" class="btn primary">右回り</button>
+            <button type="button" class="btn">左回り</button>
           </div>
-          <div class="box">
-            <div class="label">直前に操作した人</div>
-            <div><strong>たろう</strong></div>
-            <div class="label" style="margin-top:8px">直前の操作内容</div>
-            <div>採用 候補A 成功</div>
-            <p class="note">取消はセッション詳細からのみ。参加者自身は取消不可。</p>
-            <a class="btn block" href="#s-admin-session-detail-play" style="margin-top:8px">取り消す</a>
-          </div>
-        </div>
-        <div class="foot">
-          <a class="btn ghost grow" href="#s-admin-sessions">停止</a>
-          <a class="btn grow" href="#s-admin-sessions">削除</a>
-        </div>
-      </section>
-
-      <section class="screen" id="s-admin-session-detail-end" data-title="29 Admin：セッション詳細（終了）">
-        <div class="hdr">
-          <a class="back" href="#s-admin-sessions">一覧</a>
-          <h1>セッション詳細</h1>
-        </div>
-        <div class="body">
-          <p class="wf-id">WF-29 / F-20</p>
-          <div class="box">
-            <div class="row between"><span>参加コード</span><strong>B3MQ</strong></div>
-            <div class="row between"><span>ステータス</span><span class="chip">終了</span></div>
-            <div class="row between"><span>参加人数</span><strong>3</strong></div>
-          </div>
-          <p class="note">終了済み。取消は不可（または参照のみ）。削除は可。</p>
-        </div>
-        <div class="foot">
-          <a class="btn primary block grow" href="#s-admin-sessions">削除</a>
-        </div>
-      </section>
-
-      <section class="screen" id="s-admin-cards" data-title="33 Admin：カードマスタ一覧">
-        <div class="hdr">
-          <a class="back" href="#s-admin">戻る</a>
-          <h1>カードマスタ</h1>
-        </div>
-        <div class="body">
-          <p class="wf-id">WF-33 / F-22</p>
-          <a class="btn primary block" href="#s-admin-card-edit">新規登録</a>
+          <p class="label">順番（上から1番手）</p>
           <div class="list">
-            <div class="item">
-              <span>SOL-012 ソリューション</span>
-              <a class="btn sm" href="#s-admin-card-edit">編集</a>
-            </div>
-            <div class="item">
-              <span>HIR-003 採用候補</span>
-              <a class="btn sm" href="#s-admin-card-edit">編集</a>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section class="screen" id="s-admin-card-edit" data-title="34 Admin：カード登録・更新">
-        <div class="hdr">
-          <a class="back" href="#s-admin-cards">戻る</a>
-          <h1>カード編集</h1>
-        </div>
-        <div class="body">
-          <p class="wf-id">WF-34 / F-22</p>
-          <label class="stack"><span class="label">カードID</span><input class="input" value="SOL-012" readonly /></label>
-          <label class="stack"><span class="label">カード種類</span>
-            <select class="select"><option>ソリューション</option><option>採用候補</option></select>
-          </label>
-          <label class="stack"><span class="label">内容</span><textarea readonly>フレックス勤務の導入</textarea></label>
-
-          <div class="stack">
-            <span class="label">属性（複数可・チェック）</span>
-            <div class="check-grid">
-              <label><input type="checkbox" checked disabled /> くらし</label>
-              <label><input type="checkbox" disabled /> キャリア</label>
-              <label><input type="checkbox" disabled /> グローバル</label>
-              <label><input type="checkbox" disabled /> ユニークネス</label>
-              <label><input type="checkbox" checked disabled /> フェア</label>
-            </div>
-          </div>
-
-          <div class="stack">
-            <span class="label">スコア・効果（複数可・チェック）</span>
-            <div class="check-grid">
-              <label><input type="checkbox" checked disabled /> 採用</label>
-              <label><input type="checkbox" disabled /> 昇進</label>
-              <label><input type="checkbox" checked disabled /> 離職防止</label>
-            </div>
-          </div>
-
-          <div class="stack">
-            <span class="label">仕事力（0〜10）</span>
-            <div class="stepper" id="workPowerStepper">
-              <button type="button" class="btn" data-step="-1" aria-label="減らす">−</button>
-              <div class="step-val" id="workPowerVal">2</div>
-              <button type="button" class="btn" data-step="1" aria-label="増やす">＋</button>
-            </div>
-            <p class="note">数字のみ。プラス／マイナスで増減。最低0・最高10。</p>
+            <div class="item"><span>1. たろう</span><span class="chip">1番手</span></div>
+            <div class="item"><span>2. はなこ</span><span></span></div>
+            <div class="item"><span>3. じろう</span><span></span></div>
           </div>
         </div>
         <div class="foot">
-          <a class="btn ghost grow" href="#s-admin-cards">削除</a>
-          <a class="btn primary grow" href="#s-admin-cards">保存</a>
-        </div>
-      </section>
-
-      <!-- 再接続（要件 F-19 / N-02） -->
-      <section class="screen" id="s-reconnect" data-title="23 再接続">
-        <div class="hdr">
-          <a class="back" href="#s-home">戻る</a>
-          <h1>再接続</h1>
-        </div>
-        <div class="body">
-          <p class="wf-id">WF-23 / F-19, N-02</p>
-          <div class="box muted">
-            <p class="title-lg">同じ端末</p>
-            <p class="note">保持した識別情報で自動復帰 → 自社の手番・フェーズへ。</p>
-          </div>
-          <div class="box">
-            <p class="title-lg">別端末</p>
-            <p class="note">参加コード＋表示名を再入力。</p>
-            <a class="btn block" href="#s-join">再入力して復帰</a>
-          </div>
-          <div class="err">セッション終了済みの場合は復帰不可（終了画面）。</div>
+          <a class="btn primary block grow" href="#s-ready">この順番で開始</a>
         </div>
       </section>
     </div>
-
   </div>
 
   <script>
     (function () {
-      const screens = Array.from(document.querySelectorAll(".screen"));
       const select = document.getElementById("screenSelect");
       const prevBtn = document.getElementById("prevBtn");
       const nextBtn = document.getElementById("nextBtn");
       let returnTo = "s-turn-salary";
       let lastPlay = "s-turn-salary";
-
       let readyTimer = null;
       let readyLeft = 10;
+
       function clearReadyTimer() {
         if (readyTimer) {
           clearInterval(readyTimer);
@@ -2274,10 +1852,10 @@
           if (readyLeft <= 0) {
             clearReadyTimer();
             show("s-turn-salary");
+            setSalaryState("confirm");
           }
         }, 1000);
       }
-
 
       const demoLinks = {
         "s-join": [
@@ -2286,36 +1864,72 @@
         "s-join-wait": [
           { href: "#s-ready", label: "開始後の準備画面へ（デモ）" }
         ],
-        "s-turn-salary-wait": [
+        "s-turn-salary": [
+          { href: "#s-turn-salary", label: "状態：確認前に戻す（デモ）", "data-salary": "confirm" },
+          { href: "#s-turn-salary", label: "状態：確認待ちを見る（デモ）", "data-salary": "wait" },
           { href: "#s-retire-dice", label: "全員確認完了 → 退職へ（デモ）" }
         ],
         "s-retire-result": [
           { href: "#s-retire-prevented", label: "別例：残留（離職防止）" }
         ],
-        "s-solution-draw": [
-          { href: "#s-solution-result", label: "読取成功として進む（デモ）" }
-        ],
         "s-hire-select": [
-          { href: "#s-hire-result-ok", label: "競合なしで採用成功へ（デモ）" },
-          { href: "#s-hire-result-ng", label: "採用失敗へ（デモ）" }
+          { href: "#s-hire-detail", label: "読取後の候補詳細へ（デモ）" }
         ],
-        "s-hire-compete": [
-          { href: "#s-hire-result-ok", label: "採用権確定→成功へ（デモ）" },
-          { href: "#s-hire-result-ng", label: "採用失敗へ（デモ）" }
+        "s-hire-detail": [
+          { href: "#s-hire-result-ok", label: "合格通知 → 採用できた例" },
+          { href: "#s-hire-result-ng", label: "合格通知 → 採用できない例" }
+        ],
+        "s-solution-draw": [
+          { href: "#s-solution-detail", label: "読取後の詳細へ（デモ）" }
+        ],
+        "s-solution-detail": [
+          { href: "#s-solution-detail", label: "状態：決定前に戻す（デモ）", "data-solution": "detail" },
+          { href: "#s-solution-detail", label: "状態：効果反映を見る（デモ）", "data-solution": "applied" }
         ],
         "s-hire-result-ok": [
-          { href: "#s-hire-result-ng", label: "別例：採用失敗" }
+          { href: "#s-hire-result-ng", label: "別例：採用できない" }
         ],
         "s-done-skip": [
-          { href: "#s-end", label: "全ターン終了へ（デモ）" }
+          { href: "#s-turn-salary", label: "次ターン給与へ（デモ）" },
+          { href: "#s-end", label: "最終ターン終了 → 結果へ（デモ）" }
         ],
         "s-order": [
           { href: "#s-ready", label: "参加者の準備画面を見る（デモ）" }
         ],
-        "s-reconnect": [
-          { href: "#s-turn-salary", label: "同端末の自動復帰後画面へ（デモ）" }
+        "s-home": [
+          { href: "#s-admin-login", label: "adminログインへ（隅リンクと同）" }
         ]
       };
+
+      function setSalaryState(state) {
+        const screen = document.getElementById("s-turn-salary");
+        if (!screen) return;
+        screen.dataset.salaryState = state;
+        screen.querySelectorAll("[data-salary-view]").forEach((el) => {
+          el.hidden = el.dataset.salaryView !== state;
+        });
+        const whose = document.getElementById("salaryWhose");
+        const coin = document.getElementById("salaryCoinStat");
+        if (whose) {
+          whose.textContent = state === "wait" ? "他者の確認待ち" : "一斉確認";
+          whose.classList.toggle("mine", state !== "wait");
+          whose.classList.toggle("other", state === "wait");
+        }
+        if (coin) coin.textContent = state === "wait" ? "8" : "0";
+      }
+
+      function setSolutionState(state) {
+        const screen = document.getElementById("s-solution-detail");
+        if (!screen) return;
+        screen.dataset.solutionState = state;
+        screen.querySelectorAll("[data-solution-view]").forEach((el) => {
+          el.hidden = el.dataset.solutionView !== state;
+        });
+        const score = document.getElementById("solutionScoreStat");
+        const coin = document.getElementById("solutionCoinStat");
+        if (score) score.textContent = state === "applied" ? "6" : "4";
+        if (coin) coin.textContent = state === "applied" ? "7" : "8";
+      }
 
       function renderDemoLinks(screenId) {
         const box = document.getElementById("wfDemoLinks");
@@ -2325,10 +1939,21 @@
           const a = document.createElement("a");
           a.href = item.href;
           a.textContent = item.label;
+          if (item["data-salary"]) {
+            a.addEventListener("click", (e) => {
+              e.preventDefault();
+              show("s-turn-salary", false, { salaryState: item["data-salary"] });
+            });
+          }
+          if (item["data-solution"]) {
+            a.addEventListener("click", (e) => {
+              e.preventDefault();
+              show("s-solution-detail", false, { solutionState: item["data-solution"] });
+            });
+          }
           box.appendChild(a);
         });
       }
-
 
       function rebuildSelect() {
         select.innerHTML = "";
@@ -2352,12 +1977,29 @@
         });
       }
 
-      function show(id, push) {
-        const all = Array.from(document.querySelectorAll(".screen"));
-        const target = document.getElementById(id);
-        if (!target) return;
+      function show(id, push, opts) {
+        opts = opts || {};
+        // 旧 P-07 ハッシュ互換：同一画面の確認待ち状態へ
+        if (id === "s-turn-salary-wait") {
+          id = "s-turn-salary";
+          opts.salaryState = "wait";
+        }
+        // 旧 P-12 ハッシュ互換：P-11 効果反映状態へ
+        if (id === "s-solution-result") {
+          id = "s-solution-detail";
+          opts.solutionState = "applied";
+        }
 
-        // Remember play screen when leaving for lists
+        const all = Array.from(document.querySelectorAll(".screen"));
+        let target = document.getElementById(id);
+        // 画面以外の id / マージ後の壊れたハッシュで全画面が非表示にならないようにする
+        if (!target || !target.classList.contains("screen")) {
+          if (id !== "s-home") return show("s-home", push, opts);
+          target = all[0];
+          if (!target) return;
+          id = target.id;
+        }
+
         const current = all.find((s) => s.classList.contains("active"));
         if (current && current.dataset.play === "1" &&
             id !== "s-list-solutions" && id !== "s-list-employees" &&
@@ -2378,22 +2020,24 @@
         renderDemoLinks(id);
         if (id === "s-ready") startReadyCountdown();
         else clearReadyTimer();
-        // 結果演出を入り直しで再生
-        target.querySelectorAll(".fx-retire, .fx-safe, .fx-sub, .fx-power, .fx-power .plus, .fx-pay, .pay-amount").forEach((el) => {
-          el.style.animation = "none";
-          void el.offsetWidth;
-          el.style.animation = "";
-        });
-        if (push !== false) {
-          history.replaceState(null, "", "#" + id);
+
+        if (id === "s-turn-salary") {
+          if (opts.salaryState) setSalaryState(opts.salaryState);
+          else if (!current || current.id !== "s-turn-salary") setSalaryState("confirm");
         }
+        if (id === "s-solution-detail") {
+          if (opts.solutionState) setSolutionState(opts.solutionState);
+          else if (!current || current.id !== "s-solution-detail") setSolutionState("detail");
+        }
+
+        if (push !== false) history.replaceState(null, "", "#" + id);
         document.getElementById("phone").scrollTop = 0;
         target.querySelector(".body")?.scrollTo(0, 0);
       }
 
       function currentIndex() {
-        const all = Array.from(document.querySelectorAll(".screen"));
-        return all.findIndex((s) => s.classList.contains("active"));
+        return Array.from(document.querySelectorAll(".screen"))
+          .findIndex((s) => s.classList.contains("active"));
       }
 
       select.addEventListener("change", () => show(select.value));
@@ -2412,20 +2056,16 @@
         const a = e.target.closest("a[href^='#']");
         if (!a) return;
         const id = a.getAttribute("href").slice(1);
-        if (document.getElementById(id)?.classList.contains("screen")) {
+        if (
+          id === "s-turn-salary-wait" ||
+          id === "s-solution-result" ||
+          document.getElementById(id)?.classList.contains("screen")
+        ) {
           e.preventDefault();
           show(id);
         }
       });
 
-      document.querySelectorAll(".dice").forEach((dice) => {
-        dice.addEventListener("click", (e) => {
-          const btn = e.target.closest(".btn");
-          if (!btn) return;
-          dice.querySelectorAll(".btn").forEach((b) => b.classList.remove("on"));
-          btn.classList.add("on");
-        });
-      });
       document.querySelectorAll(".dice-faces").forEach((dice) => {
         dice.addEventListener("click", (e) => {
           const btn = e.target.closest(".die-face");
@@ -2435,26 +2075,34 @@
         });
       });
 
-
-      const stepper = document.getElementById("workPowerStepper");
-      if (stepper) {
-        const valEl = document.getElementById("workPowerVal");
-        let val = parseInt(valEl.textContent, 10) || 0;
-        stepper.addEventListener("click", (e) => {
-          const btn = e.target.closest("[data-step]");
-          if (!btn) return;
-          const next = val + parseInt(btn.getAttribute("data-step"), 10);
-          if (next < 0 || next > 10) return;
-          val = next;
-          valEl.textContent = String(val);
+      const salaryBtn = document.getElementById("salaryConfirmBtn");
+      if (salaryBtn) {
+        salaryBtn.addEventListener("click", () => {
+          setSalaryState("wait");
+          renderDemoLinks("s-turn-salary");
         });
       }
 
+      document.getElementById("solutionDecideBtn")?.addEventListener("click", () => {
+        setSolutionState("applied");
+        renderDemoLinks("s-solution-detail");
+      });
+
       const hash = location.hash.slice(1);
-      const aliases = { "s-hire-winner": "s-hire-compete", "s-waiting-others": "s-done-skip" };
-      const resolved = aliases[hash] || hash;
-      if (resolved && document.getElementById(resolved)) show(resolved, false);
-      else show("s-home", false);
+      if (hash === "s-turn-salary-wait") {
+        show("s-turn-salary", false, { salaryState: "wait" });
+      } else if (hash === "s-solution-result") {
+        show("s-solution-detail", false, { solutionState: "applied" });
+      } else if (hash && document.getElementById(hash)?.classList.contains("screen")) {
+        show(hash, false);
+      } else {
+        show("s-home", false);
+      }
+      // 初回表示で必ず1画面を見せる
+      if (!document.querySelector(".screen.active")) {
+        const home = document.getElementById("s-home");
+        if (home) home.classList.add("active");
+      }
     })();
   </script>
 </body>
