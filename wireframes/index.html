@@ -218,6 +218,7 @@
       font-weight: 600;
     }
     .btn.block { width: 100%; }
+    .btn.sm { padding: 4px 8px; font-size: 12px; min-width: 32px; }
     .btn.xl {
       padding: 18px 16px;
       font-size: 18px;
@@ -1804,17 +1805,41 @@
         </div>
         <div class="body">
           <p class="wf-id">P-24 / F-04</p>
-          <p class="note">退職・ソリューション・採用はこの順番で進みます。給与は一斉のため対象外です。</p>
-          <p class="label">向き</p>
-          <div class="split-2">
-            <button type="button" class="btn primary">右回り</button>
-            <button type="button" class="btn">左回り</button>
-          </div>
+          <p class="note">上から1番手。↑↓で並べ替えます。</p>
           <p class="label">順番（上から1番手）</p>
-          <div class="list">
-            <div class="item"><span>1. たろう</span><span class="chip">1番手</span></div>
-            <div class="item"><span>2. はなこ</span><span></span></div>
-            <div class="item"><span>3. じろう</span><span></span></div>
+          <div class="list" id="orderList">
+            <div class="item" data-name="たろう">
+              <span><span class="order-num">1</span>. たろう</span>
+              <span class="row" style="gap:4px">
+                <button type="button" class="btn sm order-up" aria-label="上へ">↑</button>
+                <button type="button" class="btn sm order-down" aria-label="下へ">↓</button>
+              </span>
+            </div>
+            <div class="item" data-name="はなこ">
+              <span><span class="order-num">2</span>. はなこ</span>
+              <span class="row" style="gap:4px">
+                <button type="button" class="btn sm order-up" aria-label="上へ">↑</button>
+                <button type="button" class="btn sm order-down" aria-label="下へ">↓</button>
+              </span>
+            </div>
+            <div class="item" data-name="じろう">
+              <span><span class="order-num">3</span>. じろう</span>
+              <span class="row" style="gap:4px">
+                <button type="button" class="btn sm order-up" aria-label="上へ">↑</button>
+                <button type="button" class="btn sm order-down" aria-label="下へ">↓</button>
+              </span>
+            </div>
+            <div class="item" data-name="さくら">
+              <span><span class="order-num">4</span>. さくら</span>
+              <span class="row" style="gap:4px">
+                <button type="button" class="btn sm order-up" aria-label="上へ">↑</button>
+                <button type="button" class="btn sm order-down" aria-label="下へ">↓</button>
+              </span>
+            </div>
+          </div>
+          <div class="box muted" id="orderAfterDemo" hidden>
+            <div class="label">入れ替え後（デモ）</div>
+            <div class="note" style="margin-top:4px">はなこ → たろう → さくら → じろう</div>
           </div>
         </div>
         <div class="foot">
@@ -1894,6 +1919,8 @@
           { href: "#s-end", label: "最終ターン終了 → 結果へ（デモ）" }
         ],
         "s-order": [
+          { href: "#s-order", label: "状態：入れ替え後を見る（デモ）", "data-order": "after" },
+          { href: "#s-order", label: "状態：初期順に戻す（デモ）", "data-order": "initial" },
           { href: "#s-ready", label: "参加者の準備画面を見る（デモ）" }
         ],
         "s-home": [
@@ -1949,6 +1976,12 @@
             a.addEventListener("click", (e) => {
               e.preventDefault();
               show("s-solution-detail", false, { solutionState: item["data-solution"] });
+            });
+          }
+          if (item["data-order"]) {
+            a.addEventListener("click", (e) => {
+              e.preventDefault();
+              show("s-order", false, { orderState: item["data-order"] });
             });
           }
           box.appendChild(a);
@@ -2029,6 +2062,10 @@
           if (opts.solutionState) setSolutionState(opts.solutionState);
           else if (!current || current.id !== "s-solution-detail") setSolutionState("detail");
         }
+        if (id === "s-order") {
+          if (opts.orderState) setOrderState(opts.orderState);
+          else if (!current || current.id !== "s-order") setOrderState("initial");
+        }
 
         if (push !== false) history.replaceState(null, "", "#" + id);
         document.getElementById("phone").scrollTop = 0;
@@ -2087,6 +2124,55 @@
         setSolutionState("applied");
         renderDemoLinks("s-solution-detail");
       });
+
+      const orderInitial = ["たろう", "はなこ", "じろう", "さくら"];
+      const orderAfter = ["はなこ", "たろう", "さくら", "じろう"];
+
+      function renumberOrderList() {
+        const list = document.getElementById("orderList");
+        if (!list) return;
+        list.querySelectorAll(":scope > .item").forEach((item, i) => {
+          const num = item.querySelector(".order-num");
+          if (num) num.textContent = String(i + 1);
+          const up = item.querySelector(".order-up");
+          const down = item.querySelector(".order-down");
+          if (up) up.disabled = i === 0;
+          if (down) down.disabled = i === list.children.length - 1;
+        });
+      }
+
+      function applyOrderNames(names) {
+        const list = document.getElementById("orderList");
+        if (!list) return;
+        names.forEach((name) => {
+          const item = list.querySelector('.item[data-name="' + name + '"]');
+          if (item) list.appendChild(item);
+        });
+        renumberOrderList();
+      }
+
+      function setOrderState(state) {
+        applyOrderNames(state === "after" ? orderAfter : orderInitial);
+        const demo = document.getElementById("orderAfterDemo");
+        if (demo) demo.hidden = state !== "after";
+      }
+
+      document.getElementById("orderList")?.addEventListener("click", (e) => {
+        const btn = e.target.closest(".order-up, .order-down");
+        if (!btn) return;
+        const item = btn.closest(".item");
+        const list = document.getElementById("orderList");
+        if (!item || !list) return;
+        if (btn.classList.contains("order-up") && item.previousElementSibling) {
+          list.insertBefore(item, item.previousElementSibling);
+        } else if (btn.classList.contains("order-down") && item.nextElementSibling) {
+          list.insertBefore(item.nextElementSibling, item);
+        }
+        const demo = document.getElementById("orderAfterDemo");
+        if (demo) demo.hidden = true;
+        renumberOrderList();
+      });
+      renumberOrderList();
 
       const hash = location.hash.slice(1);
       if (hash === "s-turn-salary-wait") {
